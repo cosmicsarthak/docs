@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "theme": "maple",
+  "name": "AI Expert Marketplace Notes",
   "colors": {
     "primary": "#eb5611",
     "light": "#eb5611",
@@ -42,7 +42,7 @@
           {
             "group": "Endpoint Examples",
             "pages": [
-              "https://api-ai-marketplace.cosmicsarthak.workers.dev/reference#tag/freelancerprofiles/get",
+              "api-reference/endpoint/get",
               "api-reference/endpoint/create",
               "api-reference/endpoint/delete",
               "api-reference/endpoint/webhook"
@@ -60,12 +60,12 @@
         },
         {
           "anchor": "Figma",
-          "href": "https://sarthak.app/figma",
+          "href": "https://www.figma.com/design/w8j89EMWFkT51yNoM834Av/Aniket-s-AI-Freelance?node-id=1-17&t=0gHsU9U3xsDVPt2U-1",
           "icon": "figma"
         },
         {
-          "anchor": "Blog",
-          "href": "https://sarthak.app/blog",
+          "anchor": "Changelogs",
+          "href": "https://sarthak.app/ai-expert-changelogs",
           "icon": "newspaper"
         }
       ]
@@ -85,14 +85,12 @@
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://dashboard.sarthak.com"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/cosmicsarthak"
     }
   }
 }
