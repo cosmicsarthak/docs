@@ -1,6 +1,6 @@
 ---
-title: 'Quickstart: Building a Scalable Backend API'
-description: 'Start building a robust Node.js backend API with Fastify, Apollo GraphQL, and TypeORM in under 5 minutes.'
+title: "AI Expert Portal/Marketplace Full Stack NextJS Monorepo"
+description: "My comprehensive notes to developing the Next.js frontend of a modern monorepo application, covering UI implementation, feature development, interaction with shared packages, and seamless integration with dedicated Hono API services for enhanced functionality."
 ---
 
 ## Setup your development environment
@@ -24,21 +24,20 @@ cd <your-repository-name>
 
 To see your API application in action, you'll need to install its dependencies and start the development server. This application uses **Fastify** as its web framework and **Apollo Server** for GraphQL.
 
-1.  Install project dependencies using `pnpm`:
+1. Install project dependencies using `pnpm`:
 
-    ```bash
-    pnpm install
-    ```
+   ```bash
+   pnpm install
+   ```
+2. Run the development server for the API. This typically starts the Fastify server, often on port `5000`:
 
-2.  Run the development server for the API. This typically starts the Fastify server, often on port `5000`:
+   ```bash
+   pnpm run dev
+   ```
 
-    ```bash
-    pnpm run dev
-    ```
+   Your API server should now be listening at `http://localhost:5000` (or the port configured in your `.env` file). You can test it using tools like Postman or by accessing GraphQL Playground (usually at `/graphql` endpoint if enabled).
 
-    Your API server should now be listening at `http://localhost:5000` (or the port configured in your `.env` file). You can test it using tools like Postman or by accessing GraphQL Playground (usually at `/graphql` endpoint if enabled).
-
------
+---
 
 ## Local Environment with Docker
 
@@ -48,21 +47,19 @@ For a robust local development environment, particularly for managing database d
 
 Your application requires a running instance of **PostgreSQL**. You can easily set this up using the provided `docker-compose.yml` file, which typically defines a `postgres` service.
 
-1.  Ensure you have [Docker Compose](https://docs.docker.com/compose/install/) installed and Docker Desktop running.
+1. Ensure you have [Docker Compose](https://docs.docker.com/compose/install/) installed and Docker Desktop running.
+2. From your project's root directory, run the Docker Compose command to bring up the database service:
 
-2.  From your project's root directory, run the Docker Compose command to bring up the database service:
+   ```bash
+   docker-compose up -d postgres
+   ```
 
-    ```bash
-    docker-compose up -d postgres
-    ```
+   This command will start a PostgreSQL container in the background, making it accessible to your local API.
+3. Apply the latest database migrations. This ensures your database schema is up-to-date with your TypeORM entities:
 
-    This command will start a PostgreSQL container in the background, making it accessible to your local API.
-
-3.  Apply the latest database migrations. This ensures your database schema is up-to-date with your TypeORM entities:
-
-    ```bash
-    pnpm run db:migrate:latest
-    ```
+   ```bash
+   pnpm run db:migrate:latest
+   ```
 
 ### Environment Variables
 
@@ -80,7 +77,7 @@ CLERK_PUBLISHABLE_KEY=pk_your_clerk_publishable_key_from_dashboard
 
 **Note:** Adjust `DATABASE_URL` with the correct user, password, and database name as defined in your `docker-compose.yml` or your local PostgreSQL setup.
 
------
+---
 
 ## Authentication with Clerk
 
@@ -88,41 +85,36 @@ This API application integrates with **Clerk** for robust and secure user authen
 
 ### Setting up Clerk for your API
 
-1.  **Create a Clerk Application:** If you haven't already, sign up for Clerk and create a new application in your Clerk Dashboard.
+1. **Create a Clerk Application:** If you haven't already, sign up for Clerk and create a new application in your Clerk Dashboard.
+2. **Get API Keys:** Obtain your `CLERK_SECRET_KEY` and `CLERK_PUBLISHABLE_KEY` from your Clerk Dashboard. Add these to your `.env` file as shown previously.
+3. **Integrate Clerk SDK into your Fastify Application:**
+   - Install the Clerk SDK for Node.js: `pnpm add @clerk/clerk-sdk-node`
+   - Implement **Clerk middleware** in your Fastify application. This middleware will verify incoming session tokens (e.g., from `Authorization` headers) and attach user information to the request context. This allows your API routes and GraphQL resolvers to access the authenticated user's ID and details.
 
-2.  **Get API Keys:** Obtain your `CLERK_SECRET_KEY` and `CLERK_PUBLISHABLE_KEY` from your Clerk Dashboard. Add these to your `.env` file as shown previously.
-
-3.  **Integrate Clerk SDK into your Fastify Application:**
-
-      * Install the Clerk SDK for Node.js: `pnpm add @clerk/clerk-sdk-node`
-      * Implement **Clerk middleware** in your Fastify application. This middleware will verify incoming session tokens (e.g., from `Authorization` headers) and attach user information to the request context. This allows your API routes and GraphQL resolvers to access the authenticated user's ID and details.
-
-     
-
-    ```typescript
-    // Example: Basic Clerk integration in a Fastify plugin (conceptual)
-    import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-    import { ClerkExpressWithAuth } from '@clerk/clerk-sdk-node'; // Or appropriate Fastify adapter
-
-    export default async function authPlugin(server: FastifyInstance) {
-      server.addHook('preHandler', async (request: FastifyRequest, reply: FastifyReply) => {
-        // This is a simplified example. Clerk provides specific middleware for frameworks.
-        // You would typically use Clerk's provided Fastify integration if available,
-        // or adapt Express middleware for Fastify.
-        const auth = ClerkExpressWithAuth(); // This returns an Express middleware
-        // You'd need to adapt this for Fastify's request/reply or use a dedicated Fastify Clerk package.
-        // For example, by converting Fastify's req/res to Express-like objects for the middleware.
-
-        // After successful authentication, `request.auth` (or similar) would contain
-        // the authenticated user's ID and session data.
-        // Example: if (request.auth && request.auth.userId) { /* User is authenticated */ }
-      });
-    }
-    ```
+   ```typescript
+   // Example: Basic Clerk integration in a Fastify plugin (conceptual)
+   import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+   import { ClerkExpressWithAuth } from '@clerk/clerk-sdk-node'; // Or appropriate Fastify adapter
+   
+   export default async function authPlugin(server: FastifyInstance) {
+     server.addHook('preHandler', async (request: FastifyRequest, reply: FastifyReply) => {
+       // This is a simplified example. Clerk provides specific middleware for frameworks.
+       // You would typically use Clerk's provided Fastify integration if available,
+       // or adapt Express middleware for Fastify.
+       const auth = ClerkExpressWithAuth(); // This returns an Express middleware
+       // You'd need to adapt this for Fastify's request/reply or use a dedicated Fastify Clerk package.
+       // For example, by converting Fastify's req/res to Express-like objects for the middleware.
+   
+       // After successful authentication, `request.auth` (or similar) would contain
+       // the authenticated user's ID and session data.
+       // Example: if (request.auth && request.auth.userId) { /* User is authenticated */ }
+     });
+   }
+   ```
 
 For detailed, framework-specific integration guides and examples of protecting API routes and GraphQL resolvers, refer to the [Clerk Documentation for Node.js](https://www.google.com/search?q=https://clerk.com/docs/references/node/overview).
 
------
+---
 
 ## Update your application logic
 
@@ -130,15 +122,15 @@ This section details how to extend and manage your application's core logic, lev
 
 \<CardGroup\>
 
-\<Card title="Define New Fastify Endpoints" icon="file" href="\#define-new-fastify-endpoints"\>
+\<Card title="Define New Fastify Endpoints" icon="file" href="#define-new-fastify-endpoints"\>
 Extend your API with new RESTful or custom HTTP endpoints.
 \</Card\>
 
-\<Card title="Manage GraphQL Resolvers" icon="square-code" href="\#manage-graphql-resolvers"\>
+\<Card title="Manage GraphQL Resolvers" icon="square-code" href="#manage-graphql-resolvers"\>
 Add or modify GraphQL queries, mutations, and subscriptions.
 \</Card\>
 
-\<Card title="Interact with PostgreSQL via TypeORM" icon="puzzle-piece" href="\#interact-with-postgresql-via-typeorm"\>
+\<Card title="Interact with PostgreSQL via TypeORM" icon="puzzle-piece" href="#interact-with-postgresql-via-typeorm"\>
 Perform database operations using TypeORM entities and repositories.
 \</Card\>
 
@@ -287,65 +279,61 @@ export class Article {
 
 Ensure your `DataSource` (TypeORM connection) is properly initialized and injected into your services or resolvers.
 
------
+---
 
 ## Deployment Strategy: Delivering Your API
 
 Once your API is ready, deploying it involves making it accessible to your frontend and other consumers. This can be done through various cloud providers, often leveraging containerization.
 
-\<Steps\>
-\<Step title="Containerize your Application"\>
-Create a `Dockerfile` for your application. This defines the environment and steps to build a Docker image of your API. Containerization ensures consistent deployment across different environments.
+<Steps>
+  <Step title="Containerize your Application">
+    Create a `Dockerfile` for your application. This defines the environment and steps to build a Docker image of your API. Containerization ensures consistent deployment across different environments.
 
-````
-```dockerfile
-# Use a Node.js base image
-FROM node:20-alpine
+    ```powershell
+    # Use a Node.js base image
+    FROM node:20-alpine
+    
+    # Set working directory
+    WORKDIR /app
+    
+    # Copy pnpm-lock.yaml and package.json to leverage Docker layer caching
+    COPY package.json pnpm-lock.yaml ./
+    
+    # Install dependencies
+    RUN pnpm install --frozen-lockfile
+    
+    # Copy the rest of the application code
+    COPY . .
+    
+    # Build the application (if TypeScript)
+    RUN pnpm run build
+    
+    # Expose the port your Fastify app runs on
+    EXPOSE 5000
+    
+    # Start the application
+    CMD ["pnpm", "run", "start"] # Or "pnpm", "start" if your package.json has a start script
+    ```
+  </Step>
+  <Step title="Choose a Deployment Platform">
+    Select a cloud platform for deploying your Dockerized API. Popular choices include:
+    \* **Heroku:** Simple for smaller apps.
+    \* **Render:** Provides build and deployment for Docker images, including database services.
+    \* **DigitalOcean App Platform / Droplets:** Flexible and scalable VM/container hosting.
+    \* **AWS ECS / Google Cloud Run / Azure Container Apps:** Robust container orchestration services for larger, more complex deployments.
+    \* **Vercel (for serverless functions):** While your main API might be a long-running service, some smaller functions or microservices could potentially be deployed as serverless functions if structured appropriately.
+  </Step>
+  <Step title="Set Up CI/CD and Environment Variables">
+    Configure a **Continuous Integration/Continuous Deployment (CI/CD)** pipeline (e.g., GitHub Actions, GitLab CI/CD, CircleCI) that:
+    1.  Builds your Docker image on every push to your main branch.
+    2.  Pushes the image to a container registry (e.g., Docker Hub, GitHub Container Registry).
+    3.  Deploys the new image to your chosen cloud platform.
 
-# Set working directory
-WORKDIR /app
-
-# Copy pnpm-lock.yaml and package.json to leverage Docker layer caching
-COPY package.json pnpm-lock.yaml ./
-
-# Install dependencies
-RUN pnpm install --frozen-lockfile
-
-# Copy the rest of the application code
-COPY . .
-
-# Build the application (if TypeScript)
-RUN pnpm run build
-
-# Expose the port your Fastify app runs on
-EXPOSE 5000
-
-# Start the application
-CMD ["pnpm", "run", "start"] # Or "pnpm", "start" if your package.json has a start script
-```
-````
-
-\</Step\>
-\<Step title="Choose a Deployment Platform"\>
-Select a cloud platform for deploying your Dockerized API. Popular choices include:
-\* **Heroku:** Simple for smaller apps.
-\* **Render:** Provides build and deployment for Docker images, including database services.
-\* **DigitalOcean App Platform / Droplets:** Flexible and scalable VM/container hosting.
-\* **AWS ECS / Google Cloud Run / Azure Container Apps:** Robust container orchestration services for larger, more complex deployments.
-\* **Vercel (for serverless functions):** While your main API might be a long-running service, some smaller functions or microservices could potentially be deployed as serverless functions if structured appropriately.
-\</Step\>
-\<Step title="Set Up CI/CD and Environment Variables"\>
-Configure a **Continuous Integration/Continuous Deployment (CI/CD)** pipeline (e.g., GitHub Actions, GitLab CI/CD, CircleCI) that:
-1\.  Builds your Docker image on every push to your main branch.
-2\.  Pushes the image to a container registry (e.g., Docker Hub, GitHub Container Registry).
-3\.  Deploys the new image to your chosen cloud platform.
-
-```
-Crucially, ensure all necessary production **environment variables** (e.g., `DATABASE_URL`, `CLERK_SECRET_KEY`) are securely configured within your chosen deployment platform's settings, not hardcoded.
-```
-
-\</Steps\>
-\<Step title="Monitor and Scale"\>
-Once deployed, set up monitoring for your API's performance, errors, and resource usage. Most cloud platforms provide built-in monitoring tools. As your application grows, consider implementing autoscaling based on traffic or resource consumption to ensure high availability and responsiveness.
-\</Step\>
-\</Steps\>
+    ```
+    Crucially, ensure all necessary production **environment variables** (e.g., `DATABASE_URL`, `CLERK_SECRET_KEY`) are securely configured within your chosen deployment platform's settings, not hardcoded.
+    ```
+  </Step>
+  <Step title="Monitor and Scale">
+    Once deployed, set up monitoring for your API's performance, errors, and resource usage. Most cloud platforms provide built-in monitoring tools. As your application grows, consider implementing autoscaling based on traffic or resource consumption to ensure high availability and responsiveness.
+  </Step>
+</Steps>
