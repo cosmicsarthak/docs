@@ -1,71 +1,1523 @@
 ---
-title: Introduction
-description: "Welcome to the home of your new documentation"
+title: "AI Expert Portal/Marketplace Full Stack NextJS Monorepo"
+description: "My comprehensive notes to developing the Next.js frontend of a modern monorepo application, covering UI implementation, feature development, interaction with shared packages, and seamless integration with dedicated Hono API services for enhanced functionality."
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.png"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.png"
-  alt="Hero Dark"
-/>
+---
 
-## Setting up
+## Developing Your Next.js Appfor a Scalable Monorepo Application
 
-The first step to world-class documentation is setting up your editing environments.
+This guide by Sartak plunges deep into building the **Next.js app**, the dynamic and interactive core of your sophisticated monorepo application. Far beyond a simple UI, this frontend serves as the primary conduit for user interaction, seamlessly orchestrating data flows with shared utilities, database definitions, and dedicated backend services, including the high-performance **Hono API** that forms the backbone of your application's logic.
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://sarthak.app/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://sarthak.app/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+Our mission is to architect a frontend that isn't just responsive and performant, but also exceptionally **feature-rich and maintainable**. We'll leverage the full power of modern web development paradigms and the inherent efficiencies of a monorepo structure to create a truly robust user experience.
 
-## Make it yours
+---
 
-Update your docs to your brand and add valuable content for the best user conversion.
+### Key Technologies and Architectural Context
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://sarthak.app/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://sarthak.app/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://sarthak.app/docs/content/components/accordions"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://sarthak.app/customers"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+Our frontend's architecture is a testament to the power of a well-organized monorepo, fostering **efficient code sharing**, **unified tooling**, and **streamlined development workflows** across your entire project.
+
+- **Frontend Framework:** [Next.js](https://nextjs.dev/) – We harness its versatility, strategically utilizing both the **Pages Router** for established, stable sections and progressively adopting the **App Router** for new, cutting-edge features that benefit from React Server Components and advanced data fetching.
+- **Monorepo Management:** [Turborepo](https://turbo.build/repo) – The backbone of our monorepo, enabling lightning-fast builds, smart caching, and efficient task orchestration across all workspaces.
+- **Authentication & User Management:** [Clerk](https://clerk.com/) – A comprehensive, developer-friendly solution for user identity, authentication flows, and session management, reducing boilerplate significantly.
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) – A utility-first CSS framework providing unparalleled flexibility and speed in crafting highly customizable and responsive designs.
+- **UI Primitives:** [Radix UI](https://www.radix-ui.com/) – A collection of unstyled, accessible UI components that integrate perfectly with Tailwind CSS, ensuring our UI is both beautiful and inclusive.
+- **Form Management:** [React Hook Form](https://react-hook-form.com/) – For efficient, performant, and flexible form validation and submission.
+- **Data Validation:** [Zod](https://zod.dev/) – A TypeScript-first schema declaration and validation library, ensuring type safety and data integrity across both frontend forms and backend API endpoints.
+- **Shared Database Layer:** [Prisma](https://www.prisma.io/) – Accessed via the `packages/db` workspace, Prisma provides a type-safe ORM for database interactions, ensuring a single source of truth for your data models.
+- **Backend Integration:**
+  - **Next.js API Routes:** Employed for simpler, tightly coupled data operations directly within the Next.js application, often for direct database access through `packages/db`.
+  - **Hono API Endpoints:** The primary integration point for complex business logic, resource-intensive operations, and all major feature sets that benefit from a dedicated, high-performance edge service.
+
+---
+
+### Monorepo Structure and Frontend's Pivotal Role
+
+The application's foundational organization within a Turborepo monorepo provides a cohesive and optimized environment for developing multiple applications and shared packages.
+
+```
+
+my-fullstack-app/
+├── apps/
+│   ├── web/          \# Our Next.js frontend application (the main focus here)
+│   └── hono-api/     \# Dedicated Hono backend service (already set up from previous guides)
+├── packages/
+│   ├── ui/           \# Reusable React components (buttons, inputs, modals, etc.)
+│   ├── config/       \# Shared ESLint, TypeScript, and Tailwind configurations
+│   ├── lib/          \# Common utility functions, helpers, and types
+│   └── db/           \# Prisma client, database schema definitions, and generated types
+├── turbo.json        \# Turborepo configuration for task pipelines, caching, and dependencies
+├── pnpm-workspace.yaml \# Defines all workspaces within the monorepo
+└── package.json      \# Root package.json and global dependencies
+```
+
+**`The apps/web (Next.js Frontend) within the Monorepo Ecosystem:`**
+The `apps/web` directory is where the entire user-facing interface resides. It derives immense benefits from the monorepo structure:
+
+- **`Centralized UI Components (packages/ui):`** Components like `Button`, `Input`, `Modal`, `AlertDialog`, and `Table` are developed once, residing in `packages/ui`. This ensures **visual consistency**, **reduces development time**, and makes **design system changes effortless** across the entire application.
+- **`Shared Business Logic & Utilities (packages/lib):`** Common utility functions (e.g., date formatting, data transformation, API clients, validation helpers, shared constants) are centralized. This prevents code duplication, promotes DRY principles, and ensures consistent behavior.
+- **`Type-Safe Database Interactions (packages/db):`** Thanks to Prisma's code generation, `apps/web` can directly import and utilize the exact database types (`Article`, `User`, `FreelancerApp` etc.) defined in `packages/db`. This provides **end-to-end type safety**, catching data inconsistencies at compile time rather than runtime, significantly reducing bugs.
+- **`Unified Tooling and Standards (packages/config):`** Shared ESLint, Prettier, and TypeScript configurations enforce consistent code style, quality, and type safety across `apps/web`, `apps/hono-api`, and all `packages/`. This reduces cognitive load for developers and streamlines code reviews.
+
+**Frontend-Backend Interaction Strategy: A Hybrid Approach:**
+Our Next.js frontend interacts with the backend using a strategic hybrid model:
+
+1. **`Next.js API Routes (app/api or pages/api):`** For simpler, tightly coupled data operations (e.g., a basic contact form submission, internal user profile updates not requiring the full Hono service's power), Next.js's built-in API routes are used. These routes can directly access the shared Prisma client (`packages/db`), making them ideal for quick, local data mutations or server-side data fetching for SSR/SSG.
+2. **`Hono API Service (apps/hono-api):`** This is the **primary integration point for complex business logic, resource-intensive operations, and all major feature sets** that benefit from a dedicated, high-performance edge service. This includes comprehensive operations like article management, intricate team interactions, and the entire CRUD lifecycle for freelancer "apps." The Hono API, as detailed previously, handles its own database interactions, caching (via Upstash Redis), feature flagging (via Growthbook), and robust authentication verification (via Clerk). The frontend communicates with it via standard HTTP requests (e.g., `fetch` API, Axios, or a custom API client).
+
+---
+
+## Frontend Implementation: Detailed Features Breakdown
+
+This section dives deep into the specific implementation of core features from the frontend's perspective, meticulously detailing how they are constructed using Next.js, integrate with shared monorepo packages, and communicate effectively with backend services, particularly the Hono API.
+
+---
+
+### 1. User Authentication and Profile Management
+
+Authentication is seamlessly handled by Clerk, providing a secure, customizable, and user-friendly experience right out of the box.
+
+<Steps>
+  <Step title="Clerk Provider Setup">
+    Ensure `@clerk/nextjs` is installed in `apps/web`. For Next.js Pages Router, wrap your root `_app.tsx` with `ClerkProvider`. For App Router, wrap your `layout.tsx` at the root.
+
+    ```tsx apps/web/pages/_app.tsx (Pages Router Example)
+    import { ClerkProvider } from '@clerk/nextjs';
+    import { AppProps } from 'next/app';
+    import '../styles/globals.css'; // Your global Tailwind CSS styles
+    
+    function MyApp({ Component, pageProps }: AppProps) {
+      return (
+        <ClerkProvider {...pageProps}>
+          <Component {...pageProps} />
+        </ClerkProvider>
+      );
+    }
+    
+    export default MyApp;
+    ```
+
+    ```tsx apps/web/app/layout.tsx (App Router Example)
+    import { ClerkProvider } from '@clerk/nextjs';
+    import './globals.css'; // Your global styles
+    
+    export default function RootLayout({ children }: { children: React.ReactNode }) {
+      return (
+        <ClerkProvider>
+          <html lang="en">
+            <body>{children}</body>
+          </html>
+        </ClerkProvider>
+      );
+    }
+    ```
+  </Step>
+  <Step title="Authentication Pages (`/sign-in`, `/sign-up`)">
+    Utilize Clerk's pre-built components for rapid development of authentication UI. These components are highly customizable via `appearance` props.
+
+    ```tsx apps/web/pages/sign-in.tsx (Pages Router Example)
+    import { SignIn } from '@clerk/nextjs';
+    import { useRouter } from 'next/router';
+    
+    export default function SignInPage() {
+      const router = useRouter();
+      return (
+        <div className="flex min-h-screen items-center justify-center bg-gray-50">
+          <SignIn
+            path="/sign-in" // Specify the base path for sign-in
+            routing="path" // Use path routing
+            afterSignInUrl="/dashboard" // Redirect after successful sign-in
+            afterSignUpUrl="/dashboard" // Redirect after successful sign-up (if using same form)
+            appearance={{
+              elements: {
+                formButtonPrimary: "bg-blue-600 hover:bg-blue-700 text-white",
+                card: "shadow-lg rounded-lg border border-gray-200",
+              },
+            }}
+          />
+        </div>
+      );
+    }
+    ```
+
+    These paths are typically configured via environment variables like `NEXT_PUBLIC_CLERK_SIGN_IN_URL` and `NEXT_PUBLIC_CLERK_SIGN_UP_URL`.
+  </Step>
+  <Step title="Protecting Routes with Middleware">
+    Secure your application's private areas (e.g., `/dashboard`, `/settings`) using Clerk's robust middleware. This ensures only authenticated users can access specific paths.
+
+    ```tsx apps/web/middleware.ts (for Next.js Middleware)
+    import { authMiddleware } from "@clerk/nextjs";
+    
+    export default authMiddleware({
+      // Public routes that don't require authentication
+      publicRoutes: [
+        "/",
+        "/sign-in",
+        "/sign-up",
+        "/articles(.*)",       // Public article viewing
+        "/freelancers(.*)",     // Public freelancer profiles
+        "/api/webhooks(.*)",    // Clerk webhooks need to be public
+        "/public(.*)",          // Any other publicly accessible routes
+      ],
+      // Routes to ignore entirely from authentication check
+      ignoredRoutes: ["/api/healthcheck", "/_next/static(.*)", "/favicon.ico"],
+    });
+    
+    export const config = {
+      // Matcher config ensures middleware runs on all routes except static assets
+      matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+    };
+    ```
+  </Step>
+  <Step title="Handling Custom User Data (e.g., bio, website, skills)">
+    For data specific to your application, you'll need to store it in your `packages/db` `User` model. This requires synchronizing Clerk user IDs with your database.
+
+    **Clerk Webhooks to Next.js API Route:**
+    The most robust way is to set up Clerk webhooks that trigger your Next.js API route (`/api/webhooks/clerk`). This route then creates or updates your `User` record in `packages/db` whenever a user is created, updated, or deleted in Clerk.
+
+    ```tsx apps/web/pages/api/webhooks/clerk.ts
+    import { WebhookEvent } from '@clerk/nextjs/server';
+    import { headers } from 'next/headers';
+    import { Webhook } from 'svix';
+    import { db } from 'db'; // Import your Prisma client from packages/db
+    
+    // Important: Do not cache this route
+    export const runtime = 'nodejs'; // Or 'edge' if using Edge runtime
+    
+    export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+      if (req.method !== 'POST') {
+        return res.status(405).json({ message: 'Method Not Allowed' });
+      }
+    
+      const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
+      if (!WEBHOOK_SECRET) {
+        throw new Error('Please add CLERK_WEBHOOK_SECRET from Clerk Dashboard to .env');
+      }
+    
+      const svix_id = req.headers['svix-id'] as string;
+      const svix_timestamp = req.headers['svix-timestamp'] as string;
+      const svix_signature = req.headers['svix-signature'] as string;
+    
+      if (!svix_id || !svix_timestamp || !svix_signature) {
+        return res.status(400).json({ message: 'Missing Svix headers' });
+      }
+    
+      const payload = JSON.stringify(req.body);
+      const wh = new Webhook(WEBHOOK_SECRET);
+    
+      let evt: WebhookEvent;
+      try {
+        evt = wh.verify(payload, {
+          "svix-id": svix_id,
+          "svix-timestamp": svix_timestamp,
+          "svix-signature": svix_signature,
+        }) as WebhookEvent;
+      } catch (err) {
+        console.error('Error verifying webhook:', err);
+        return res.status(400).json({ message: 'Invalid signature' });
+      }
+    
+      const { id } = evt.data;
+      const eventType = evt.type;
+    
+      console.log(`Clerk Webhook Event: ${eventType} - User ID: ${id}`);
+    
+      try {
+        switch (eventType) {
+          case 'user.created':
+            await db.user.create({
+              data: {
+                id: evt.data.id, // Clerk's user ID
+                email: evt.data.email_addresses[0].email_address,
+                name: evt.data.first_name + ' ' + evt.data.last_name,
+                // Add other initial fields from Clerk data
+              },
+            });
+            console.log(`User ${id} created in DB.`);
+            break;
+          case 'user.updated':
+            await db.user.update({
+              where: { id: evt.data.id },
+              data: {
+                email: evt.data.email_addresses[0].email_address,
+                name: evt.data.first_name + ' ' + evt.data.last_name,
+                // Update other fields as needed
+              },
+            });
+            console.log(`User ${id} updated in DB.`);
+            break;
+          case 'user.deleted':
+            await db.user.delete({
+              where: { id: evt.data.id },
+            });
+            console.log(`User ${id} deleted from DB.`);
+            break;
+          default:
+            console.warn(`Unhandled webhook event type: ${eventType}`);
+        }
+        return res.status(200).json({ success: true });
+      } catch (dbError) {
+        console.error(`Database operation failed for ${eventType} event for user ${id}:`, dbError);
+        return res.status(500).json({ message: 'Internal Server Error during DB sync' });
+      }
+    }
+    ```
+
+    **Frontend Custom Profile Form:**
+    Create a form using `react-hook-form` and `zod` for validation. Submit this form to a Next.js API route (e.g., `/api/user/profile`) that updates your `User` model via `packages/db`.
+
+    ```tsx apps/web/components/UserProfileForm.tsx
+    import { useUser } from '@clerk/nextjs';
+    import { useForm } from 'react-hook-form';
+    import { zodResolver } from '@hookform/resolvers/zod';
+    import { z } from 'zod';
+    import { Input, Button } from 'ui'; // From packages/ui
+    import { toast } from 'react-hot-toast'; // For notifications
+    
+    const profileSchema = z.object({
+      bio: z.string().max(500).optional(),
+      website: z.string().url().optional().or(z.literal('')),
+      // Add other custom fields
+    });
+    
+    type ProfileFormValues = z.infer<typeof profileSchema>;
+    
+    export default function UserProfileForm() {
+      const { user, isLoaded } = useUser();
+      const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ProfileFormValues>({
+        resolver: zodResolver(profileSchema),
+        defaultValues: {
+          // Fetch initial data from your database (e.g., via SWR or a custom fetch hook)
+          bio: user?.publicMetadata?.bio as string || '',
+          website: user?.publicMetadata?.website as string || '',
+        },
+      });
+    
+      const onSubmit = async (data: ProfileFormValues) => {
+        if (!user) return;
+        try {
+          // Option 1: Update Clerk's publicMetadata (simple custom fields)
+          await user.update({
+            publicMetadata: {
+              bio: data.bio,
+              website: data.website,
+            },
+          });
+          toast.success('Profile updated successfully (Clerk metadata)!');
+    
+          // Option 2: Call your Next.js API route or Hono API for more complex data
+          // const response = await fetch('/api/user/update-profile', {
+          //   method: 'POST',
+          //   headers: { 'Content-Type': 'application/json' },
+          //   body: JSON.stringify({ userId: user.id, ...data }),
+          // });
+          // if (!response.ok) throw new Error('Failed to update profile');
+          // toast.success('Profile updated successfully (DB)!');
+    
+        } catch (error) {
+          console.error('Failed to update profile:', error);
+          toast.error('Failed to update profile.');
+        }
+      };
+    
+      if (!isLoaded) return <div>Loading profile...</div>;
+    
+      return (
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md mx-auto">
+          <div>
+            <label htmlFor="bio" className="block text-sm font-medium text-gray-700">Bio</label>
+            <Input id="bio" {...register('bio')} className="mt-1 block w-full" />
+            {errors.bio && <p className="text-red-500 text-xs mt-1">{errors.bio.message}</p>}
+          </div>
+          <div>
+            <label htmlFor="website" className="block text-sm font-medium text-gray-700">Website URL</label>
+            <Input id="website" {...register('website')} className="mt-1 block w-full" />
+            {errors.website && <p className="text-red-500 text-xs mt-1">{errors.website.message}</p>}
+          </div>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Saving...' : 'Save Profile'}
+          </Button>
+        </form>
+      );
+    }
+    ```
+  </Step>
+</Steps>
+
+---
+
+### 2. Article Management System
+
+This robust feature enables users to create, publish, and manage their content seamlessly, much like a professional blogging platform.
+
+#### Article List and Dashboard
+
+Users need a centralized, intuitive interface to view and manage all their articles, regardless of their status.
+
+- **UI Layout:** Design a table or grid view to display articles, featuring columns for **Title**, **Status** (Draft/Published), **Author**, **Last Updated**, and **Actions** (Edit, View, Delete). Implement client-side filtering, sorting, and pagination for optimal user experience with large datasets.
+- **Data Fetching Strategy:** The frontend sends an authenticated `GET` request to your **Hono API** endpoint: `/articles`. The Hono API, leveraging `packages/db`, will query the `Article` model, typically filtering by the authenticated user's ID (obtained from the Clerk token verified by Hono).
+
+```tsx apps/web/app/dashboard/articles/page.tsx (App Router Example)
+import { getAuth } from '@clerk/nextjs/server'; // For server-side fetching
+import { redirect } from 'next/navigation';
+import { ArticleTable } from './_components/ArticleTable'; // Your table component
+
+interface Article { // Match your Prisma `Article` type from `packages/db`
+  id: string;
+  title: string;
+  slug: string;
+  status: 'DRAFT' | 'PUBLISHED';
+  updatedAt: string;
+  authorId: string;
+}
+
+async function fetchArticles(userId: string): Promise<Article[]> {
+  const API_DOMAIN = process.env.NEXT_PUBLIC_API_DOMAIN; // Hono API URL
+  if (!API_DOMAIN) throw new Error("NEXT_PUBLIC_API_DOMAIN is not set");
+
+  // Note: In a real app, you'd include the Clerk session token for Hono API verification
+  // For simplicity, this example assumes Hono validates auth via a middleware that
+  // might extract the token from headers added by the Next.js API layer or similar.
+  // Or for SSR, you might pass the token via fetch('...', { headers: { Authorization: `Bearer ${token}` }})
+  const res = await fetch(`${API_DOMAIN}/articles?authorId=${userId}`, {
+    headers: {
+      // 'Authorization': `Bearer ${token}`, // If passing token from server
+      'Content-Type': 'application/json'
+    },
+    next: { revalidate: 60 } // Revalidate data every 60 seconds
+  });
+
+  if (!res.ok) {
+    console.error("Failed to fetch articles:", await res.text());
+    throw new Error('Failed to fetch articles');
+  }
+  return res.json();
+}
+
+export default async function ArticlesDashboardPage() {
+  const { userId } = getAuth(); // Get Clerk user ID on the server
+
+  if (!userId) {
+    redirect('/sign-in'); // Redirect unauthenticated users
+  }
+
+  const articles = await fetchArticles(userId);
+
+  return (
+    <div className="container mx-auto py-8">
+      <h1 className="text-3xl font-bold mb-6">Your Articles</h1>
+      <ArticleTable articles={articles} />
+    </div>
+  );
+}
+```
+
+#### Advanced Rich Article Editor
+
+A comprehensive, intuitive editor for creating and modifying article content, supporting rich text and media.
+
+- **Rich Text Editor Integration:** Integrate a robust library like [TipTap](https://tiptap.dev/), [Lexical](https://lexical.dev/), or [Draft.js](https://draftjs.org/). These offer highly customizable experiences for rich text, markdown, and collaborative editing.
+- **Form Fields with Validation:** Alongside the main editor, include dedicated input fields for critical metadata:
+  - **Title:** `string`, required.
+  - **Slug:** Automatically generated from the title, but editable. Must be unique. Client-side debounce and API call to Hono (`GET /articles/check-slug?slug=...`) to verify uniqueness.
+  - **Team Association:** A dropdown to link the article to a specific team (if applicable). This dropdown's options would be fetched from **`Hono API: GET /teams`** (filtered by teams the user is a member of).
+  - **SEO Metadata:** Dedicated fields for `seoTitle` (optional, falls back to `title`), `seoDescription` (optional), and `keywords` (comma-separated string).
+  - **Cover Image:** An input for uploading a cover image, integrated with file upload logic.
+- **Robust Image/Media Uploads:**
+  - **Frontend (Client-Side):** Users select a file. The frontend previews the image (e.g., using `URL.createObjectURL`).
+  - **`API Interaction (Hono API):`**
+    1. The frontend sends a `POST` request to a **Hono API endpoint** specifically for uploads (e.g., `POST /uploads/image`) as a `FormData` object.
+    2. The Hono API receives the file, processes it (e.g., resizing, optimization), and then uploads it to a dedicated object storage service (e.g., Cloudflare R2, AWS S3, Vercel Blob).
+    3. The Hono API returns a **publicly accessible URL** for the uploaded image.
+    4. The frontend inserts this URL into the rich text editor's content.
+  - **Example Frontend Upload Hook:**
+
+  ```tsx apps/web/hooks/useImageUpload.ts
+  import { useState, useCallback } from 'react';
+  import { toast } from 'react-hot-toast';
+  
+  export const useImageUpload = () => {
+    const [isUploading, setIsUploading] = useState(false);
+  
+    const uploadImage = useCallback(async (file: File): Promise<string | null> => {
+      if (!file) return null;
+  
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+  
+      try {
+        // Ensure NEXT_PUBLIC_API_DOMAIN is correctly set in .env.local
+        const API_URL = `${process.env.NEXT_PUBLIC_API_DOMAIN}/uploads/image`;
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          body: formData,
+          // Hono API will handle authentication via Clerk middleware.
+          // For client-side, Clerk's Next.js SDK automatically attaches the token
+          // when making fetch requests to same-origin /api routes.
+          // If direct to Hono, you might need to manually pass Clerk's session token.
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Image upload failed');
+        }
+  
+        const data = await response.json();
+        toast.success('Image uploaded successfully!');
+        return data.url; // The public URL from Hono API
+      } catch (error) {
+        console.error('Image upload error:', error);
+        toast.error(`Image upload failed: ${error instanceof Error ? error.message : String(error)}`);
+        return null;
+      } finally {
+        setIsUploading(false);
+      }
+    }, []);
+  
+    return { uploadImage, isUploading };
+  };
+  ```
+- **Save as Draft/Publish/Unpublish Logic:**
+  - **Save Draft:** Sends a `POST` or `PUT` request to **`Hono API: /articles`** with `isPublished: false`. This allows users to work on content without making it public.
+  - **Publish:** Sends a `POST` or `PUT` request to **`Hono API: /articles/:id/publish`**. The Hono API handles updating `isPublished: true` and setting the `publishedAt` timestamp.
+  - **Unpublish:** Sends a `POST` request to **`Hono API: /articles/:id/unpublish`**. The Hono API sets `isPublished: false`, making the article private again.
+
+#### Comprehensive SEO Frontend Integration
+
+Ensuring your articles are highly discoverable by search engines is paramount for content visibility.
+
+- **Dynamic Meta Tags (Next.js App Router):**
+  Leverage Next.js 13\+'s powerful `metadata` API within your article display page (`app/articles/[slug]/page.tsx`). This allows for dynamic generation of `meta` tags based on fetched article data.
+
+  ```tsx app/articles/[slug]/page.tsx (App Router Example for Metadata)
+  import { getArticleBySlug } from '@/lib/api-client'; // Your client-side Hono API wrapper
+  import type { Metadata } from 'next'; // Import Metadata type
+  
+  interface ArticleProps {
+    params: { slug: string };
+  }
+  
+  // Generate dynamic metadata
+  export async function generateMetadata({ params }: ArticleProps): Promise<Metadata> {
+    const article = await getArticleBySlug(params.slug); // Fetch from Hono public API
+  
+    if (!article) {
+      return {
+        title: "Article Not Found",
+        description: "The article you are looking for does not exist.",
+      };
+    }
+  
+    return {
+      title: article.seoTitle || article.title,
+      description: article.seoDescription || `Read "${article.title}" and more.`,
+      openGraph: {
+        title: article.seoTitle || article.title,
+        description: article.seoDescription || `Read "${article.title}" and more.`,
+        url: `https://your-app-domain.com/articles/${article.slug}`,
+        images: [
+          {
+            url: article.coverImage || '/default-og-image.jpg',
+            width: 1200,
+            height: 630,
+            alt: article.title,
+          },
+        ],
+        type: 'article',
+        publishedTime: article.publishedAt,
+        modifiedTime: article.updatedAt,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: article.seoTitle || article.title,
+        description: article.seoDescription || `Read "${article.title}" and more.`,
+        images: [article.coverImage || '/default-twitter-image.jpg'],
+      },
+      alternates: {
+        canonical: `https://your-app-domain.com/articles/${article.slug}`,
+      },
+    };
+  }
+  
+  export default async function ArticlePage({ params }: ArticleProps) {
+    const article = await getArticleBySlug(params.slug); // Fetch article for rendering
+  
+    if (!article || article.status === 'DRAFT') {
+      return <div className="text-center py-20">Article not found or not published.</div>;
+    }
+  
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-extrabold mb-4">{article.title}</h1>
+        <p className="text-gray-600 text-sm mb-6">Published on {new Date(article.publishedAt).toLocaleDateString()}</p>
+        <div className="prose lg:prose-xl max-w-none" dangerouslySetInnerHTML={{ __html: article.content }} />
+        <ArticleSchema article={article} /> {/* Structured Data */}
+      </div>
+    );
+  }
+  ```
+- **Structured Data (JSON-LD):** Embed JSON-LD directly into your article pages for enhanced rich snippets in search results. This should be added within the component rendering the article.
+
+  ```tsx apps/web/components/ArticleSchema.tsx
+  import Script from 'next/script';
+  import { Article as ArticleType } from 'db'; // Import Prisma Article type
+  
+  interface ArticleSchemaProps {
+    article: ArticleType; // Pass the full article object
+  }
+  
+  export default function ArticleSchema({ article }: ArticleSchemaProps) {
+    const schema = {
+      "@context": "[https://schema.org](https://schema.org)",
+      "@type": "Article",
+      "headline": article.title,
+      "description": article.seoDescription || article.excerpt || article.content?.substring(0, 160),
+      "image": article.coverImage ? [article.coverImage] : [], // Use an array for images
+      "author": {
+        "@type": "Person",
+        "name": article.author.name // Assuming author relationship is loaded
+      },
+      "datePublished": article.publishedAt,
+      "dateModified": article.updatedAt,
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `https://your-app-domain.com/articles/${article.slug}`
+      }
+    };
+    return (
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+    );
+  }
+  ```
+
+---
+
+### 3. Team Collaboration Features
+
+This functionality empowers users to form and manage teams, facilitating collaborative content creation or sophisticated project management.
+
+#### Team Creation and Joining Flows
+
+The frontend provides intuitive interfaces for users to initiate new teams or seamlessly integrate into existing ones.
+
+- **`Create Team Form (/dashboard/teams/new):`**
+  - **UI:** A form with fields for `teamName`, `description`, and an auto-generated (but editable) `slug`.
+  - **Submission:** Upon submission, send a `POST` request to **`Hono API: /teams`**. The Hono API, after validation and authentication, will handle the creation of the `Team` record in `packages/db` and automatically add the creating user as the `TeamMember` with an `admin` role.
+  - **Client-Side Validation:** Use `react-hook-form` with `zod` resolver for robust client-side validation.
+
+  ```tsx apps/web/components/TeamCreationForm.tsx
+  import { useForm } from 'react-hook-form';
+  import { zodResolver } from '@hookform/resolvers/zod';
+  import { z } from 'zod';
+  import { Input, Button, Textarea } from 'ui'; // From packages/ui
+  import { toast } from 'react-hot-toast';
+  import { useRouter } from 'next/navigation';
+  
+  const createTeamSchema = z.object({
+    name: z.string().min(3, "Team name must be at least 3 characters").max(50),
+    slug: z.string().min(3, "Slug must be at least 3 characters").max(50).regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric and hyphens"),
+    description: z.string().max(250).optional(),
+  });
+  
+  type CreateTeamFormValues = z.infer<typeof createTeamSchema>;
+  
+  export function TeamCreationForm() {
+    const router = useRouter();
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CreateTeamFormValues>({
+      resolver: zodResolver(createTeamSchema),
+      defaultValues: { name: '', slug: '', description: '' },
+    });
+  
+    // Optional: Add a useEffect to auto-generate slug from name as user types
+  
+    const onSubmit = async (data: CreateTeamFormValues) => {
+      try {
+        const API_URL = `${process.env.NEXT_PUBLIC_API_DOMAIN}/teams`;
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+  
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || 'Failed to create team');
+        }
+  
+        const newTeam = await res.json();
+        toast.success(`Team "${newTeam.name}" created successfully!`);
+        router.push(`/dashboard/teams/${newTeam.slug}`); // Redirect to new team's dashboard
+      } catch (error) {
+        console.error('Team creation error:', error);
+        toast.error(`Error creating team: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    };
+  
+    return (
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Team Name</label>
+          <Input id="name" {...register('name')} className="mt-1 block w-full" />
+          {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+        </div>
+        <div>
+          <label htmlFor="slug" className="block text-sm font-medium text-gray-700">Team Slug (URL)</label>
+          <Input id="slug" {...register('slug')} className="mt-1 block w-full" />
+          {errors.slug && <p className="text-red-500 text-xs mt-1">{errors.slug.message}</p>}
+        </div>
+        <div>
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description (Optional)</label>
+          <Textarea id="description" {...register('description')} className="mt-1 block w-full" />
+          {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
+        </div>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Creating...' : 'Create Team'}
+        </Button>
+      </form>
+    );
+  }
+  ```
+- **Join Team Flow (Invitation System):**
+  - **Display Invitations:** The frontend displays pending team invitations (e.g., on a user's dashboard or notification center). A `GET` request to **`Hono API: /users/:userId/invitations`** (authenticated) would retrieve these.
+  - **Accept/Decline UI:** Buttons for `Accept` or `Decline` an invitation. Clicking these would send `POST` requests to **`Hono API: /invitations/:id/accept`** or **`/invitations/:id/decline`**, respectively.
+
+#### Team Dashboard and Member Management
+
+Each team requires a dedicated dashboard for its members, providing oversight and management capabilities.
+
+- **`Team Overview Page (/dashboard/teams/[teamSlug]):`**
+  - **UI:** Display the team's name, description, and a comprehensive list of `TeamMember`s. Implement clear roles (Admin, Editor, Member) for each user.
+  - **Data Fetching:** Fetch team-specific data from **`Hono API: /teams/:teamId`** (or `/teams/by-slug/:teamSlug`). The Hono API will perform stringent authentication and membership checks to ensure the requesting user is authorized to view this team's details.
+  - **Role-Based UI Rendering:** Use Clerk's `has` helper (e.g., `user.has({ permission: 'org:team:manage_members' })`) or a custom role check to conditionally render admin-only UI elements.
+- **Member List & Role Management:**
+  - **UI:** Present `TeamMember`s with their `User` details (name, email) and their assigned `role`. For team `admin`s, provide interactive UI elements (e.g., dropdowns or toggle buttons) to change a member's role (e.g., from `member` to `editor` or `admin`).
+  - **API Interaction:** Role changes are critical operations. They trigger `PUT` requests to **`Hono API: /teams/:teamId/members/:userId/role`**. The Hono API is responsible for enforcing strict `admin` permissions for these actions before applying updates via `packages/db`.
+- **Invite New Members:**
+  - **UI:** A dedicated form to input an email address to invite a new user to the team.
+  - **API Interaction:** Sends a `POST` request to **`Hono API: /teams/:teamId/invite`**. The Hono API would create an `Invitation` record in `packages/db` and could optionally trigger an email notification to the invited user.
+
+---
+
+### 4. Freelancer "App" Management
+
+This is a **core, custom feature** allowing individual freelancers to showcase and manage their projects or services, essentially creating a personalized portfolio within the platform.
+
+#### Freelancer "App" Dashboard
+
+Freelancers require a dedicated dashboard to efficiently manage their created "apps."
+
+- **UI Layout:** Display a visually appealing list or grid of `FreelancerApp` entries owned by the currently authenticated user. Each "app" card should prominently feature its `name`, `status` (Draft/Published), `category`, and clearly accessible action buttons (Edit, View Demo, View Repository, Delete).
+- **Data Fetching:** The frontend initiates a `GET` request to **`Hono API: /freelancer-apps`**. The Hono API, secured by Clerk's authentication, will automatically filter these results based on the `userId` extracted from the authenticated request, ensuring users only see their own apps.
+
+```tsx apps/web/app/dashboard/my-apps/page.tsx
+import { getAuth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
+import { FreelancerAppCard } from './_components/FreelancerAppCard'; // Your app card component
+
+interface FreelancerApp { // Match your Prisma `FreelancerApp` type
+  id: string;
+  name: string;
+  description: string | null;
+  category: string;
+  demoUrl: string | null;
+  repoUrl: string | null;
+  status: 'DRAFT' | 'PUBLISHED';
+  userId: string;
+}
+
+async function fetchFreelancerApps(userId: string): Promise<FreelancerApp[]> {
+  const API_DOMAIN = process.env.NEXT_PUBLIC_API_DOMAIN;
+  if (!API_DOMAIN) throw new Error("NEXT_PUBLIC_API_DOMAIN is not set");
+
+  const res = await fetch(`${API_DOMAIN}/freelancer-apps`, {
+    headers: {
+      'Content-Type': 'application/json'
+      // Authorization header with Clerk token will be added by a client-side API helper
+      // or managed by the Hono API's Clerk middleware if directly from server
+    },
+    next: { revalidate: 60 }
+  });
+
+  if (!res.ok) {
+    console.error("Failed to fetch freelancer apps:", await res.text());
+    throw new Error('Failed to fetch freelancer apps');
+  }
+  return res.json();
+}
+
+export default async function MyAppsDashboardPage() {
+  const { userId } = getAuth();
+
+  if (!userId) {
+    redirect('/sign-in');
+  }
+
+  const apps = await fetchFreelancerApps(userId);
+
+  return (
+    <div className="container mx-auto py-8">
+      <h1 className="text-3xl font-bold mb-6">My Freelancer Apps</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {apps.length === 0 ? (
+          <p className="col-span-full text-center text-gray-500">No apps created yet. <a href="/dashboard/my-apps/new" className="text-blue-600 hover:underline">Create one!</a></p>
+        ) : (
+          apps.map((app) => (
+            <FreelancerAppCard key={app.id} app={app} />
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+```
+
+#### Create/Edit Freelancer "App" Forms
+
+Comprehensive forms are essential for defining and updating the intricate details of a freelancer's application.
+
+- **`App Form Component (components/FreelancerAppForm.tsx):`** Create a highly reusable and well-validated form component.
+  - **Fields:** Include inputs for `name`, `description` (textarea), `category` (dropdown, possibly dynamically loaded options from Hono API: `GET /categories/freelancer-apps`), `demoUrl` (URL input), `repoUrl` (URL input), and `status` (radio buttons/dropdown for "Draft" or "Published").
+  - **Validation:** Implement `react-hook-form` with `zodResolver` for robust client-side validation, providing immediate user feedback.
+
+  ```tsx apps/web/components/FreelancerAppForm.tsx
+  import { useForm } from 'react-hook-form';
+  import { zodResolver } from '@hookform/resolvers/zod';
+  import { z } from 'zod';
+  import { Input, Button, Textarea, Select } from 'ui'; // From packages/ui
+  import { toast } from 'react-hot-toast';
+  import { useRouter } from 'next/navigation';
+  import { useEffect } from 'react';
+  
+  // Match the shape of your FreelancerApp in packages/db and Hono API
+  const freelancerAppSchema = z.object({
+    id: z.string().optional(), // Only present for edits
+    name: z.string().min(3, "App name must be at least 3 characters").max(100),
+    description: z.string().max(1000).optional(),
+    category: z.string().min(1, "Please select a category"),
+    demoUrl: z.string().url("Must be a valid URL").optional().or(z.literal('')),
+    repoUrl: z.string().url("Must be a valid URL").optional().or(z.literal('')),
+    status: z.enum(['DRAFT', 'PUBLISHED']),
+  });
+  
+  type FreelancerAppFormValues = z.infer<typeof freelancerAppSchema>;
+  
+  interface FreelancerAppFormProps {
+    initialData?: FreelancerAppFormValues; // For editing
+  }
+  
+  export function FreelancerAppForm({ initialData }: FreelancerAppFormProps) {
+    const router = useRouter();
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FreelancerAppFormValues>({
+      resolver: zodResolver(freelancerAppSchema),
+      defaultValues: initialData || {
+        name: '',
+        description: '',
+        category: '',
+        demoUrl: '',
+        repoUrl: '',
+        status: 'DRAFT',
+      },
+    });
+  
+    useEffect(() => {
+      // Reset form when initialData changes (e.g., when navigating from new to edit)
+      if (initialData) {
+        reset(initialData);
+      }
+    }, [initialData, reset]);
+  
+    const onSubmit = async (data: FreelancerAppFormValues) => {
+      try {
+        const method = data.id ? 'PUT' : 'POST';
+        const API_URL = data.id
+          ? `${process.env.NEXT_PUBLIC_API_DOMAIN}/freelancer-apps/${data.id}`
+          : `${process.env.NEXT_PUBLIC_API_DOMAIN}/freelancer-apps`;
+  
+        const res = await fetch(API_URL, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+  
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || `Failed to ${data.id ? 'update' : 'create'} app`);
+        }
+  
+        const appResponse = await res.json();
+        toast.success(`App "${appResponse.name}" ${data.id ? 'updated' : 'created'} successfully!`);
+        router.push('/dashboard/my-apps'); // Redirect to app list
+        router.refresh(); // Invalidate Next.js cache for the apps list page
+      } catch (error) {
+        console.error('App form submission error:', error);
+        toast.error(`Error ${data.id ? 'updating' : 'creating'} app: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    };
+  
+    const categories = ['Web Development', 'Mobile App', 'Design', 'Marketing', 'Writing', 'Other']; // Example categories
+  
+    return (
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">App Name</label>
+          <Input id="name" {...register('name')} className="mt-1 block w-full" />
+          {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+        </div>
+        <div>
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+          <Textarea id="description" {...register('description')} rows={4} className="mt-1 block w-full" />
+          {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
+        </div>
+        <div>
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
+          <Select id="category" {...register('category')} className="mt-1 block w-full">
+            <option value="">Select a category</option>
+            {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+          </Select>
+          {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category.message}</p>}
+        </div>
+        <div>
+          <label htmlFor="demoUrl" className="block text-sm font-medium text-gray-700">Demo URL (Optional)</label>
+          <Input id="demoUrl" {...register('demoUrl')} type="url" className="mt-1 block w-full" />
+          {errors.demoUrl && <p className="text-red-500 text-xs mt-1">{errors.demoUrl.message}</p>}
+        </div>
+        <div>
+          <label htmlFor="repoUrl" className="block text-sm font-medium text-gray-700">Repository URL (Optional)</label>
+          <Input id="repoUrl" {...register('repoUrl')} type="url" className="mt-1 block w-full" />
+          {errors.repoUrl && <p className="text-red-500 text-xs mt-1">{errors.repoUrl.message}</p>}
+        </div>
+        <div>
+          <span className="block text-sm font-medium text-gray-700 mb-2">Status</span>
+          <div className="flex items-center space-x-4">
+            <label className="flex items-center">
+              <input type="radio" {...register('status')} value="DRAFT" className="form-radio" />
+              <span className="ml-2">Draft</span>
+            </label>
+            <label className="flex items-center">
+              <input type="radio" {...register('status')} value="PUBLISHED" className="form-radio" />
+              <span className="ml-2">Published</span>
+            </label>
+          </div>
+          {errors.status && <p className="text-red-500 text-xs mt-1">{errors.status.message}</p>}
+        </div>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? (data.id ? 'Updating...' : 'Creating...') : (data.id ? 'Update App' : 'Create App')}
+        </Button>
+      </form>
+    );
+  }
+  ```
+- **`Create New App (/dashboard/my-apps/new):`**
+  - Render the `FreelancerAppForm` without `initialData`.
+  - Upon submission, the form sends a `POST` request to **`Hono API: /freelancer-apps`**. The Hono API will create a new `FreelancerApp` record, automatically associating it with the authenticated `userId`.
+- **`Edit Existing App (/dashboard/my-apps/[appId]/edit):`**
+  - Before rendering the form, fetch the existing app's data using its `appId` from **`Hono API: /freelancer-apps/:appId`**.
+  - Pass the fetched data as `initialData` to the `FreelancerAppForm`.
+  - Upon submission, the form sends a `PUT` request to **`Hono API: /freelancer-apps/:appId`**. The Hono API will update the existing record, strictly ensuring that the authenticated user is indeed the owner of the app.
+
+#### Delete Freelancer "App" Functionality
+
+Empowering freelancers to remove their apps with confidence.
+
+- **Delete Button & Confirmation:**
+  - Integrate a "Delete" button directly on each app card within the dashboard or on the individual app's edit page.
+  - Upon activation, present a **confirmation modal** (reusable component from `packages/ui`) to prevent accidental deletions.
+  - If confirmed, send a `DELETE` request to **`Hono API: /freelancer-apps/:appId`**. The Hono API will verify ownership and then atomically remove the record from `packages/db`.
+  - **Optimistic Updates (Optional):** For a snappier UX, you can remove the item from the UI immediately upon sending the delete request, then revert if the API call fails.
+
+#### Public Freelancer Profile Display
+
+Offer freelancers the option to showcase their "apps" on a publicly accessible profile page, enhancing their visibility.
+
+- **`Public Profile Page (/profile/:username or /freelancers/:userId):`**
+  - This page is designed to be **publicly accessible** (not gated by authentication).
+  - **Data Fetching:** Fetch the freelancer's public profile details and only their _published_ apps by sending a `GET` request to a public **Hono API endpoint**: `/public/users/:userId/apps`.
+  - **UI:** Display the apps in a clean, professional, portfolio-like layout.
+  - **SEO & Performance:** Leverage Next.js's **Static Site Generation (SSG)** (if profiles are relatively static) or **Server-Side Rendering (SSR)** (for highly dynamic profiles) to ensure optimal performance and search engine indexability for these critical public-facing pages.
+
+---
+
+### 5. Search and Discovery
+
+Implement a comprehensive search functionality, allowing users to effortlessly find articles, teams, or freelancer apps across the platform.
+
+#### Frontend Search UI and Querying
+
+A global search bar or a dedicated search page provides the primary interface for users to query content.
+
+- **Search Input Component:** A well-designed input field where users can type their search query.
+- **Displaying Results:** A dedicated component or section to render the search results, potentially categorizing them by content type (articles, teams, freelancer apps) for clarity.
+- **API Interaction:**
+  - **Debouncing Input:** As the user types, implement debouncing (e.g., using `useDebounce` hook) to prevent excessive API calls.
+  - **Querying Hono API:** Send a `GET` request to your **Hono API's centralized search endpoint** (e.g., `GET /search?query=user+query&type=articles,teams`).
+  - **Hono API's Role:** The Hono API handles the actual search logic across different database models (`Article`, `Team`, `FreelancerApp`) using Prisma's powerful querying capabilities (e.g., `OR` conditions, full-text search extensions, or even integrating with a dedicated search service like Algolia or ElasticSearch).
+  - **Frontend Rendering:** The frontend processes the structured search results returned by the Hono API and renders them appropriately.
+  - **Example Search Component:**
+
+  ```tsx apps/web/components/GlobalSearch.tsx
+  import { useState, useEffect, useCallback } from 'react';
+  import { Input } from 'ui'; // From packages/ui
+  import { useDebounce } from '@/lib/hooks'; // Assuming a useDebounce hook in packages/lib
+  
+  interface SearchResult {
+    id: string;
+    title: string;
+    type: 'article' | 'team' | 'freelancer-app';
+    url: string; // URL to the resource on the frontend
+    description?: string;
+  }
+  
+  export function GlobalSearch() {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const debouncedSearchTerm = useDebounce(searchTerm, 500); // Debounce by 500ms
+  
+    const fetchSearchResults = useCallback(async (query: string) => {
+      if (!query.trim()) {
+        setSearchResults([]);
+        return;
+      }
+  
+      setIsLoading(true);
+      try {
+        const API_URL = `${process.env.NEXT_PUBLIC_API_DOMAIN}/search?query=${encodeURIComponent(query)}`;
+        const res = await fetch(API_URL);
+  
+        if (!res.ok) {
+          throw new Error('Failed to fetch search results');
+        }
+        const data = await res.json();
+        setSearchResults(data);
+      } catch (error) {
+        console.error('Search error:', error);
+        setSearchResults([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }, []);
+  
+    useEffect(() => {
+      fetchSearchResults(debouncedSearchTerm);
+    }, [debouncedSearchTerm, fetchSearchResults]);
+  
+    return (
+      <div className="relative max-w-lg mx-auto">
+        <Input
+          type="text"
+          placeholder="Search articles, teams, apps..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full pl-10 pr-4 py-2 border rounded-full focus:ring-blue-500 focus:border-blue-500"
+        />
+        {isLoading && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">Loading...</span>}
+  
+        {searchResults.length > 0 && (
+          <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-2 max-h-60 overflow-y-auto">
+            {searchResults.map((result) => (
+              <a key={result.id} href={result.url} className="block px-4 py-2 hover:bg-gray-100 border-b border-gray-100 last:border-b-0">
+                <p className="font-semibold text-sm">{result.title} <span className="text-xs text-gray-500 ml-2">({result.type})</span></p>
+                {result.description && <p className="text-xs text-gray-600 line-clamp-1">{result.description}</p>}
+              </a>
+            ))}
+          </div>
+        )}
+        {searchTerm && !isLoading && searchResults.length === 0 && (
+          <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-2 px-4 py-2 text-center text-gray-500">
+            No results found for "{searchTerm}".
+          </div>
+        )}
+      </div>
+    );
+  }
+  ```
+
+---
+
+### 6. Comprehensive SEO and Metadata Handling
+
+Beyond specific article SEO, ensuring your core application pages are search engine friendly is crucial for organic discovery and platform growth.
+
+#### Global Metadata (`app/layout.tsx`)
+
+Set default meta tags for your entire application, which can then be overridden by specific pages or layouts.
+
+```tsx app/layout.tsx
+import type { Metadata } from 'next';
+import { ClerkProvider } from '@clerk/nextjs';
+import './globals.css';
+
+export const metadata: Metadata = {
+  title: {
+    default: 'My Fullstack App - Build, Share, Collaborate',
+    template: '%s | My Fullstack App',
+  },
+  description: 'A robust platform for creating content, managing teams, and showcasing freelancer apps.',
+  keywords: ['fullstack', 'monorepo', 'nextjs', 'hono', 'clerk', 'prisma', 'turborepo', 'articles', 'teams', 'freelancer apps'],
+  openGraph: {
+    title: 'My Fullstack App',
+    description: 'A robust platform for creating content, managing teams, and showcasing freelancer apps.',
+    url: '[https://your-app-domain.com](https://your-app-domain.com)',
+    siteName: 'My Fullstack App',
+    images: [
+      {
+        url: '[https://your-app-domain.com/og-image.jpg](https://your-app-domain.com/og-image.jpg)', // Default OG image
+        width: 1200,
+        height: 630,
+        alt: 'My Fullstack App Banner',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'My Fullstack App',
+    description: 'A robust platform for creating content, managing teams, and showcasing freelancer apps.',
+    creator: '@your_twitter_handle',
+    images: ['[https://your-app-domain.com/twitter-image.jpg](https://your-app-domain.com/twitter-image.jpg)'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  manifest: '/site.webmanifest',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon-16x16.png',
+    apple: '/apple-touch-icon.png',
+  },
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <ClerkProvider>
+      <html lang="en">
+        <body>{children}</body>
+      </html>
+    </ClerkProvider>
+  );
+}
+```
+
+#### Page-Specific Overrides
+
+On individual pages (e.g., team dashboards, public freelancer profiles), dynamically set `metadata` objects that intelligently override the global defaults based on the specific data fetched for that page. This data would be pulled directly from the **Hono API** (e.g., team description, freelancer app details).
+
+```tsx app/dashboard/teams/[teamSlug]/page.tsx
+import { getTeamBySlug } from '@/lib/api-client'; // Your Hono API client for teams
+import type { Metadata } from 'next';
+
+interface TeamPageProps {
+  params: { teamSlug: string };
+}
+
+export async function generateMetadata({ params }: TeamPageProps): Promise<Metadata> {
+  const team = await getTeamBySlug(params.teamSlug); // Fetch team from Hono API
+
+  if (!team) {
+    return {
+      title: "Team Not Found",
+      description: "This team does not exist or you do not have access.",
+    };
+  }
+
+  return {
+    title: `${team.name} Dashboard`,
+    description: team.description || `Manage and collaborate with the ${team.name} team.`,
+    openGraph: {
+      title: `${team.name} Team`,
+      description: team.description || `Manage and collaborate with the ${team.name} team.`,
+      url: `https://your-app-domain.com/dashboard/teams/${team.slug}`,
+      // Add team-specific OG image if available
+    },
+  };
+}
+
+export default async function TeamDashboardPage({ params }: TeamPageProps) {
+  const team = await getTeamBySlug(params.teamSlug);
+
+  if (!team) {
+    return <div className="text-center py-20">Team not found or access denied.</div>;
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-4">{team.name} Dashboard</h1>
+      <p className="text-gray-600 mb-6">{team.description}</p>
+      {/* ... Team members, projects, settings ... */}
+    </div>
+  );
+}
+```
+
+#### Sitemap and Robots.txt Generation
+
+Crucial for guiding search engines in crawling and indexing your site effectively.
+
+**`Dynamic Sitemap (app/sitemap.xml/route.ts):`**
+Generate a dynamic sitemap that includes all publicly accessible pages, especially your articles, public freelancer profiles, and static marketing pages. This should fetch data from your **Hono API's public endpoints**.
+
+```tsx app/sitemap.xml/route.ts
+import { getAllPublishedArticles, getAllPublishedFreelancerApps } from '@/lib/api-client'; // Hono API client
+import { MetadataRoute } from 'next';
+
+const APP_DOMAIN = process.env.NEXT_PUBLIC_APP_DOMAIN || '[https://your-app-domain.com](https://your-app-domain.com)';
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticRoutes: MetadataRoute.Sitemap = [
+    { url: APP_DOMAIN, lastModified: new Date(), changeFrequency: 'monthly', priority: 1.0 },
+    { url: `${APP_DOMAIN}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${APP_DOMAIN}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${APP_DOMAIN}/articles`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${APP_DOMAIN}/freelancers`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    // Add other static public pages
+  ];
+
+  // Fetch dynamic data from Hono API (assuming public endpoints exist)
+  const articles = await getAllPublishedArticles(); // Call Hono API for published articles
+  const freelancerApps = await getAllPublishedFreelancerApps(); // Call Hono API for published apps
+
+  const articleEntries: MetadataRoute.Sitemap = articles.map((article) => ({
+    url: `${APP_DOMAIN}/articles/${article.slug}`,
+    lastModified: new Date(article.updatedAt),
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }));
+
+  const freelancerAppEntries: MetadataRoute.Sitemap = freelancerApps.map((app) => ({
+    url: `${APP_DOMAIN}/freelancers/${app.id}`, // Or by slug/username
+    lastModified: new Date(app.updatedAt),
+    changeFrequency: 'weekly',
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...articleEntries, ...freelancerAppEntries];
+}
+```
+
+**`Robots.txt (app/robots.txt/route.ts):`**
+Create a `robots.txt` file to instruct search engine crawlers which parts of your site they should and shouldn't access.
+
+```tsx app/robots.txt/route.ts
+import { MetadataRoute } from 'next';
+
+const APP_DOMAIN = process.env.NEXT_PUBLIC_APP_DOMAIN || '[https://your-app-domain.com](https://your-app-domain.com)';
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [
+      {
+        userAgent: '*',
+        allow: ['/', '/articles/', '/freelancers/', '/public/'], // Allow public content
+        disallow: ['/dashboard/', '/api/', '/sign-in', '/sign-up'], // Disallow private/API routes
+      },
+    ],
+    sitemap: `${APP_DOMAIN}/sitemap.xml`,
+  };
+}
+```
+
+---
+
+### 7. Advanced Frontend Considerations
+
+Beyond core features, optimizing user experience and developer workflow involves several advanced patterns.
+
+#### Robust Error Handling and User Feedback
+
+A resilient frontend gracefully handles errors and provides clear feedback.
+
+- **Global Error Boundaries:** Implement React Error Boundaries to catch UI errors and prevent entire application crashes.
+- **API Error Handling:** Centralize API error handling within a custom `fetch` wrapper or API client. Display user-friendly error messages using a toast notification system (e.g., `react-hot-toast`).
+- **Loading States and Skeletons:** Provide visual cues during data fetching to enhance perceived performance. Use skeleton loaders for complex components or spinner/progress bars for simple actions.
+
+  ```tsx apps/web/components/ArticleSkeleton.tsx
+  // A simple skeleton loader
+  export function ArticleSkeleton() {
+    return (
+      <div className="border border-gray-200 shadow rounded-md p-4 max-w-sm w-full mx-auto animate-pulse">
+        <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+        <div className="space-y-2">
+          <div className="h-3 bg-gray-200 rounded"></div>
+          <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+          <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+        </div>
+      </div>
+    );
+  }
+  ```
+- **Empty States:** Clearly communicate when there's no data (e.g., "No articles found. Create your first one\!").
+
+#### Data Fetching Strategies (SWR / React Query)
+
+Optimize data fetching and caching for a snappier user experience.
+
+- **Client-Side Fetching with SWR or React Query:** For data that needs frequent revalidation, mutation, or optimistic updates (like lists of articles or apps in a dashboard), libraries like SWR ([`swr`](https://swr.vercel.app/)) or React Query ([`@tanstack/react-query`](https://tanstack.com/query/latest)) are invaluable. They handle caching, revalidation on focus, retries, and provide hooks for easy data management.
+
+  ```tsx apps/web/hooks/useArticles.ts
+  import useSWR from 'swr';
+  import type { Article } from 'db'; // From packages/db
+  
+  const fetcher = async (url: string) => {
+    const res = await fetch(url);
+    if (!res.ok) {
+      const error = new Error('An error occurred while fetching the data.');
+      // Attach extra info to the error object.
+      // error.info = await res.json();
+      // error.status = res.status;
+      throw error;
+    }
+    return res.json();
+  };
+  
+  export function useArticles(userId?: string) {
+    const API_DOMAIN = process.env.NEXT_PUBLIC_API_DOMAIN;
+    const url = userId ? `${API_DOMAIN}/articles?authorId=${userId}` : null; // Only fetch if userId exists
+  
+    const { data, error, isLoading, mutate } = useSWR<Article[]>(url, fetcher);
+  
+    return {
+      articles: data,
+      isLoading,
+      isError: error,
+      mutateArticles: mutate, // Allows refetching or optimistic updates
+    };
+  }
+  ```
+
+  Then use it in your component:
+
+  ```tsx apps/web/app/dashboard/articles/page.tsx (Example using useSWR on client)
+  'use client'; // This component would be a client component
+  
+  import { useUser } from '@clerk/nextjs';
+  import { useArticles } from '@/hooks/useArticles';
+  import { ArticleTable } from './_components/ArticleTable'; // Your table component
+  import { Button } from 'ui';
+  import Link from 'next/link';
+  
+  export default function ArticlesDashboardClientPage() {
+    const { user, isLoaded } = useUser();
+    const { articles, isLoading, isError, mutateArticles } = useArticles(user?.id);
+  
+    if (!isLoaded || isLoading) return <div className="text-center py-20">Loading articles...</div>;
+    if (isError) return <div className="text-center py-20 text-red-600">Error loading articles.</div>;
+    if (!user) return <div className="text-center py-20">Please sign in to view your articles.</div>;
+  
+    return (
+      <div className="container mx-auto py-8">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Your Articles</h1>
+          <Link href="/dashboard/articles/new">
+            <Button>Create New Article</Button>
+          </Link>
+        </div>
+        <ArticleTable articles={articles || []} onArticleDeleted={mutateArticles} /> {/* Pass mutate for refetch */}
+      </div>
+    );
+  }
+  ```
+
+---
+
+### 8. Development Workflow and Tooling
+
+Working within a monorepo with Turborepo significantly enhances your development experience by providing a unified, performant, and scalable environment.
+
+#### Optimized Local Development Environment
+
+Running your frontend and seamlessly connecting to your backend services locally is critical for rapid iteration.
+
+\<Steps\>
+\<Step title="Start Concurrent Services"\>
+Leverage Turborepo's `dev` command to concurrently start your Next.js frontend and Hono API. This ensures both services are running and accessible for development.
+
+````
+```bash Terminal
+# From the monorepo root:
+pnpm dev
+# This will run the 'dev' script for all apps defined in turbo.json
+# e.g., apps/web (Next.js) on http://localhost:3000
+# and apps/hono-api (Hono) on http://localhost:8000 (or your configured port)
+```
+Alternatively, you can run specific apps:
+```bash Terminal
+pnpm --filter=web dev
+pnpm --filter=hono-api dev
+```
+````
+
+\</Step\>
+\<Step title="Configure Environment Variables"\>
+Ensure your `apps/web/.env.local` accurately points to your local Hono API instance for development. This is crucial for frontend API calls.
+
+````
+```bash apps/web/.env.local
+# Clerk Authentication Environment Variables
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
+CLERK_SECRET_KEY="sk_test_..."
+
+# Application Domain (for public links, emails, etc.)
+NEXT_PUBLIC_APP_DOMAIN="http://localhost:3000"
+
+# **CRITICAL**: Hono API Endpoint for Local Development
+NEXT_PUBLIC_API_DOMAIN="http://localhost:8000" # Point to your local Hono API
+```
+This setup allows your frontend `fetch` or Axios calls to correctly target the Hono API during development.
+````
+
+\</Step\>
+\<Step title="Leverage Hot Module Reloading (HMR)"\>
+Both Next.js and Hono (with `tsx watch` or similar) support HMR, providing instant feedback on code changes without full page refreshes. Ensure your development servers are configured for HMR for the best developer experience.
+\</Step\>
+\</Steps\>
+
+#### Mastering Shared Packages for Code Reusability
+
+The true power of the monorepo lies in its ability to facilitate seamless code sharing, drastically reducing redundancy and boosting consistency.
+
+- **`Reusable UI Components (packages/ui):`**
+  Develop a comprehensive library of React components in `packages/ui`. These components are then easily imported and used across `apps/web` and potentially other frontend applications within your monorepo.
+
+  ```tsx apps/web/components/AuthLayout.tsx
+  import { Button, Card, Input } from 'ui'; // Direct import from packages/ui
+  
+  interface AuthLayoutProps {
+    children: React.ReactNode;
+    title: string;
+  }
+  
+  export function AuthLayout({ children, title }: AuthLayoutProps) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <Card className="max-w-md w-full space-y-8">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">{title}</h2>
+          {children}
+        </Card>
+      </div>
+    );
+  }
+  ```
+- **`Centralized Utility Functions (packages/lib):`**
+  Place common utility functions, data transformers, API client helpers, and shared types in `packages/lib`. This ensures a single source of truth for frequently used logic.
+
+  ```typescript apps/web/utils/api.ts
+  import { API_BASE_URL } from 'lib/constants'; // Shared constant from packages/lib
+  import { isValidationError } from 'lib/errors'; // Shared error type from packages/lib
+  
+  export async function fetchFromHono(path: string, options?: RequestInit) {
+    const response = await fetch(`${API_BASE_URL}${path}`, options);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw isValidationError(errorData) ? new Error(errorData.errors.join(', ')) : new Error(errorData.message || 'An API error occurred');
+    }
+    return response.json();
+  }
+  ```
+- **`Type-Safe Database Definitions (packages/db):`**
+  Prisma's generated types from your `schema.prisma` in `packages/db` are automatically available throughout your monorepo. This provides compile-time type checking for your data structures on both the frontend and backend, drastically reducing runtime errors.
+
+  ```typescript apps/web/pages/dashboard/articles.tsx
+  import type { Article, User } from 'db'; // Import Prisma types directly
+  // This ensures that when you fetch an Article, TypeScript knows its exact structure.
+  
+  interface ArticleWithAuthor extends Article {
+    author: User; // Example of including a relation
+  }
+  
+  async function getArticles(): Promise<ArticleWithAuthor[]> {
+    // ... fetch from Hono API, which returns data adhering to these types
+    const articles = await fetchFromHono('/articles');
+    return articles as ArticleWithAuthor[];
+  }
+  ```
+
+#### Comprehensive Testing Strategy
+
+Implement a multi-layered testing strategy across your monorepo to ensure application stability and reliability.
+
+- **Frontend Unit and Integration Tests:**
+  - Use **Jest** or **Vitest** for fast unit tests of pure functions and small components.
+  - Employ **React Testing Library** for integration tests that simulate user interactions, ensuring components behave as expected.
+- **End-to-End (E2E) Testing:**
+  - Utilize **Playwright** or **Cypress** for E2E tests that simulate real user flows across your deployed frontend and interacting with your deployed backend services. These tests are crucial for catching issues that span multiple components or services.
+- **Monorepo Test Orchestration:**
+  Configure your `turbo.json` to include a `test` pipeline that can run tests across all relevant workspaces.
+
+  ```json turbo.json
+  {
+    "pipeline": {
+      "build": {
+        "dependsOn": ["^build"]
+      },
+      "dev": {
+        "cache": false,
+        "persistent": true
+      },
+      "test": {
+        "dependsOn": ["build"],
+        "outputs": ["coverage/**"]
+      },
+      "lint": {
+        "outputs": []
+      }
+    }
+  }
+  ```
+
+  You can then run all tests from the monorepo root:
+
+  ```bash Terminal
+  pnpm test
+  # Turborepo will run the 'test' script in each package configured with it.
+  ```
+
+---
+
+### 9. Deployment Strategy: Seamless Frontend Delivery
+
+Deploying your Next.js frontend is remarkably streamlined using Vercel, integrating smoothly with your existing CI/CD pipelines and backend services.
+
+\<Steps\>
+\<Step title="Prepare Git Repository"\>
+Ensure your entire monorepo is hosted on a Git provider (GitHub, GitLab, Bitbucket). This is the source Vercel will pull from.
+\</Step\>
+\<Step title="Set Up Vercel Project"\>
+In your Vercel dashboard:
+
+1. Create a new project and link it directly to your monorepo repository.
+2. **`Crucially, set the "Root Directory" to apps/web`**. This tells Vercel to navigate into this specific directory to find, build, and deploy your Next.js application.
+3. Vercel will automatically detect Next.js. For a monorepo, you might need to explicitly set the "Build Command" to `pnpm --filter=web build` (if you're using pnpm and filtering workspaces), and ensure the "Output Directory" is `.next`.
+   \</Step\>
+   \<Step title="Configure Environment Variables"\>
+   Meticulously configure all necessary environment variables directly in your Vercel project settings (under "Settings" -\> "Environment Variables"). This includes:
+   \* `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (publicly exposed)
+   \* `CLERK_SECRET_KEY` (server-side only)
+   \* `NEXT_PUBLIC_APP_DOMAIN` (your deployed frontend URL, e.g., `https://your-app-domain.com`)
+   \* **`NEXT_PUBLIC_API_DOMAIN:`** **This variable is absolutely critical.** Set it to the **public URL of your deployed Hono API** (e.g., `https://api.example.com`). This ensures your frontend makes API calls to the correct, live backend service in production.
+   \</Step\>
+   \<Step title="Enable Automated Deployments"\>
+   Vercel automatically triggers a new deployment for every push to your configured Git branch (e.g., `main`). Turborepo's intelligent caching further accelerates these builds, ensuring swift updates to your live application. No manual intervention is needed after the initial setup.
+   \</Step\>
+   \</Steps\>
+
+---
+
+## Conclusion and Next Steps
+
+You've now explored a comprehensive and deeply detailed approach to developing a sophisticated Next.js frontend within a scalable monorepo architecture. By meticulously leveraging shared packages and integrating seamlessly with dedicated Hono API services, you're empowered to build applications that are not only powerful and maintainable but also deliver exceptional performance and user experiences.
+
+This robust foundation provides ample room for continued growth and innovation. What exciting new features or architectural enhancements are you envisioning for your project's next phase?
