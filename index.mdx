@@ -1341,11 +1341,11 @@ Working within a monorepo with Turborepo significantly enhances your development
 
 Running your frontend and seamlessly connecting to your backend services locally is critical for rapid iteration.
 
-\<Steps\>
-\<Step title="Start Concurrent Services"\>
+<Steps>
+<Step title="Start Concurrent Services">
 Leverage Turborepo's `dev` command to concurrently start your Next.js frontend and Hono API. This ensures both services are running and accessible for development.
 
-````
+
 ```bash Terminal
 # From the monorepo root:
 pnpm dev
@@ -1358,13 +1358,13 @@ Alternatively, you can run specific apps:
 pnpm --filter=web dev
 pnpm --filter=hono-api dev
 ```
-````
 
-\</Step\>
-\<Step title="Configure Environment Variables"\>
+</Step>
+
+<Step title="Configure Environment Variables">
 Ensure your `apps/web/.env.local` accurately points to your local Hono API instance for development. This is crucial for frontend API calls.
 
-````
+
 ```bash apps/web/.env.local
 # Clerk Authentication Environment Variables
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
@@ -1377,13 +1377,12 @@ NEXT_PUBLIC_APP_DOMAIN="http://localhost:3000"
 NEXT_PUBLIC_API_DOMAIN="http://localhost:8000" # Point to your local Hono API
 ```
 This setup allows your frontend `fetch` or Axios calls to correctly target the Hono API during development.
-````
 
-\</Step\>
-\<Step title="Leverage Hot Module Reloading (HMR)"\>
+</Step>
+<Step title="Leverage Hot Module Reloading (HMR)">
 Both Next.js and Hono (with `tsx watch` or similar) support HMR, providing instant feedback on code changes without full page refreshes. Ensure your development servers are configured for HMR for the best developer experience.
-\</Step\>
-\</Steps\>
+</Step>
+\</Steps>
 
 #### Mastering Shared Packages for Code Reusability
 
@@ -1491,28 +1490,28 @@ Implement a multi-layered testing strategy across your monorepo to ensure applic
 
 Deploying your Next.js frontend is remarkably streamlined using Vercel, integrating smoothly with your existing CI/CD pipelines and backend services.
 
-\<Steps\>
-\<Step title="Prepare Git Repository"\>
+<Steps>
+<Step title="Prepare Git Repository">
 Ensure your entire monorepo is hosted on a Git provider (GitHub, GitLab, Bitbucket). This is the source Vercel will pull from.
-\</Step\>
-\<Step title="Set Up Vercel Project"\>
+</Step>
+<Step title="Set Up Vercel Project">
 In your Vercel dashboard:
 
 1. Create a new project and link it directly to your monorepo repository.
 2. **`Crucially, set the "Root Directory" to apps/web`**. This tells Vercel to navigate into this specific directory to find, build, and deploy your Next.js application.
 3. Vercel will automatically detect Next.js. For a monorepo, you might need to explicitly set the "Build Command" to `pnpm --filter=web build` (if you're using pnpm and filtering workspaces), and ensure the "Output Directory" is `.next`.
-   \</Step\>
-   \<Step title="Configure Environment Variables"\>
+   </Step>
+   <Step title="Configure Environment Variables">
    Meticulously configure all necessary environment variables directly in your Vercel project settings (under "Settings" -\> "Environment Variables"). This includes:
    \* `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (publicly exposed)
    \* `CLERK_SECRET_KEY` (server-side only)
    \* `NEXT_PUBLIC_APP_DOMAIN` (your deployed frontend URL, e.g., `https://your-app-domain.com`)
    \* **`NEXT_PUBLIC_API_DOMAIN:`** **This variable is absolutely critical.** Set it to the **public URL of your deployed Hono API** (e.g., `https://api.example.com`). This ensures your frontend makes API calls to the correct, live backend service in production.
-   \</Step\>
-   \<Step title="Enable Automated Deployments"\>
+   </Step>
+   <Step title="Enable Automated Deployments">
    Vercel automatically triggers a new deployment for every push to your configured Git branch (e.g., `main`). Turborepo's intelligent caching further accelerates these builds, ensuring swift updates to your live application. No manual intervention is needed after the initial setup.
-   \</Step\>
-   \</Steps\>
+   </Step>
+   </Steps>
 
 ---
 
@@ -1520,4 +1519,4 @@ In your Vercel dashboard:
 
 You've now explored a comprehensive and deeply detailed approach to developing a sophisticated Next.js frontend within a scalable monorepo architecture. By meticulously leveraging shared packages and integrating seamlessly with dedicated Hono API services, you're empowered to build applications that are not only powerful and maintainable but also deliver exceptional performance and user experiences.
 
-This robust foundation provides ample room for continued growth and innovation. What exciting new features or architectural enhancements are you envisioning for your project's next phase?
+This robust foundation provides ample room for continued growth and innovation.
