@@ -64,6 +64,11 @@
           "icon": "figma"
         },
         {
+          "anchor": "Backend App (minimalised)",
+          "href": "https://api-ai-marketplace.cosmicsarthak.workers.dev/reference",
+          "icon": "cloudflare"
+        },
+        {
           "anchor": "Changelogs",
           "href": "https://sarthak.app/ai-expert-changelogs",
           "icon": "newspaper"

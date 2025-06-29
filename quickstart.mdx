@@ -1,97 +1,351 @@
 ---
-title: 'Quickstart'
-description: 'Start building awesome documentation in under 5 minutes'
+title: 'Quickstart: Building a Scalable Backend API'
+description: 'Start building a robust Node.js backend API with Fastify, Apollo GraphQL, and TypeORM in under 5 minutes.'
 ---
 
-## Setup your development
+## Setup your development environment
 
-Learn how to update your docs locally and deploy them to the public.
+Learn how to set up your Node.js API application locally and prepare it for deployment.
 
-### Edit and preview
+### Get started: Clone the repository
 
-<AccordionGroup>
-  <Accordion icon="github" title="Clone your docs locally">
-    During the onboarding process, we created a repository on your Github with
-    your docs content. You can find this repository on our
-    [dashboard](https://dashboard.sarthak.app). To clone the repository
-    locally, follow these
-    [instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-    in your terminal.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Preview changes">
-    Previewing helps you make sure your changes look as intended. We built a
-    command line interface to render these changes locally. 
-    1. Install the
-    [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the
-    documentation changes locally with this command: ``` npm i -g mintlify ```
-    2. Run the following command at the root of your documentation (where
-    `docs.json` is): ``` mintlify dev ```
-    <Note>
-      If you’re currently using the legacy ```mint.json``` configuration file, please update the Mintlify CLI:
+Begin development by cloning your application's source code. This repository contains all the necessary services for your backend API.
 
+To clone the repository locally, open your terminal and follow these [instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository):
 
-      ```npm i -g mintlify@latest```
-      And run the new upgrade command in your docs repository:
+Once cloned, navigate into the project's root directory:
 
-      ```mintlify upgrade```
-      You should now be using the new ```docs.json``` configuration file. Feel free to delete the ```mint.json``` file from your repository.
-    </Note>
-  </Accordion>
-</AccordionGroup>
+```bash
+git clone <your-repository-url>
+cd <your-repository-name>
+```
 
-### Deploy your changes
+### Preview changes locally: Running the API server
 
-<AccordionGroup>
+To see your API application in action, you'll need to install its dependencies and start the development server. This application uses **Fastify** as its web framework and **Apollo Server** for GraphQL.
 
-<Accordion icon="message-bot" title="Install our Github app">
-  Our Github app automatically deploys your changes to your docs site, so you
-  don't need to manage deployments yourself. You can find the link to install on
-  your [dashboard](https://dashboard.sarthak.app). Once the bot has been
-  successfully installed, there should be a check mark next to the commit hash
-  of the repo.
-</Accordion>
-<Accordion icon="rocket" title="Push your changes">
-  [Commit and push your changes to
-  Git](https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository#about-git-push)
-  for your changes to update in your docs site. If you push and don't see that
-  the Github app successfully deployed your changes, you can also manually
-  update your docs through our [dashboard](https://dashboard.sarthak.app).
-</Accordion>
+1.  Install project dependencies using `pnpm`:
 
-</AccordionGroup>
+    ```bash
+    pnpm install
+    ```
 
-## Update your docs
+2.  Run the development server for the API. This typically starts the Fastify server, often on port `5000`:
 
-Add content directly in your files with MDX syntax and React components. You can use any of our components, or even build your own.
+    ```bash
+    pnpm run dev
+    ```
 
-<CardGroup>
+    Your API server should now be listening at `http://localhost:5000` (or the port configured in your `.env` file). You can test it using tools like Postman or by accessing GraphQL Playground (usually at `/graphql` endpoint if enabled).
 
-<Card title="Add Content With MDX" icon="file" href="/essentials/markdown">
-  Add content to your docs with MDX syntax.
-</Card>
+-----
 
-<Card
-  title="Add Code Blocks"
-  icon="square-code"
-  href="/essentials/code"
->
-  Add code directly to your docs with syntax highlighting.
-</Card>
+## Local Environment with Docker
 
-<Card
-  title="Add Images"
-  icon="image"
-  href="/essentials/images"
->
-  Add images to your docs to make them more engaging.
-</Card>
+For a robust local development environment, particularly for managing database dependencies, **Docker Compose** is highly recommended. This API uses **PostgreSQL** as its primary database.
 
-<Card
-  title="Add Custom Components"
-  icon="puzzle-piece"
-  href="/essentials/reusable-snippets"
->
-  Add templates to your docs to make them more reusable.
-</Card>
+### Database Setup (PostgreSQL)
 
-</CardGroup>
+Your application requires a running instance of **PostgreSQL**. You can easily set this up using the provided `docker-compose.yml` file, which typically defines a `postgres` service.
+
+1.  Ensure you have [Docker Compose](https://docs.docker.com/compose/install/) installed and Docker Desktop running.
+
+2.  From your project's root directory, run the Docker Compose command to bring up the database service:
+
+    ```bash
+    docker-compose up -d postgres
+    ```
+
+    This command will start a PostgreSQL container in the background, making it accessible to your local API.
+
+3.  Apply the latest database migrations. This ensures your database schema is up-to-date with your TypeORM entities:
+
+    ```bash
+    pnpm run db:migrate:latest
+    ```
+
+### Environment Variables
+
+The API application relies on **environment variables** for configuration. A `.env` file is used to set these variables for local development.
+
+Create a `.env` file in the root of your project (or verify its existence if you cloned from a template) and populate it with necessary variables. This includes database connection details and your authentication service keys:
+
+```dotenv
+PORT=5000
+DATABASE_URL=postgresql://user:password@localhost:5432/your_database_name?schema=public
+# Clerk Authentication Environment Variables
+CLERK_SECRET_KEY=sk_your_clerk_secret_key_from_dashboard
+CLERK_PUBLISHABLE_KEY=pk_your_clerk_publishable_key_from_dashboard
+```
+
+**Note:** Adjust `DATABASE_URL` with the correct user, password, and database name as defined in your `docker-compose.yml` or your local PostgreSQL setup.
+
+-----
+
+## Authentication with Clerk
+
+This API application integrates with **Clerk** for robust and secure user authentication. Clerk provides a comprehensive suite of tools for user management, authentication flows, and more, handling aspects like user sessions, identity verification, and access control.
+
+### Setting up Clerk for your API
+
+1.  **Create a Clerk Application:** If you haven't already, sign up for Clerk and create a new application in your Clerk Dashboard.
+
+2.  **Get API Keys:** Obtain your `CLERK_SECRET_KEY` and `CLERK_PUBLISHABLE_KEY` from your Clerk Dashboard. Add these to your `.env` file as shown previously.
+
+3.  **Integrate Clerk SDK into your Fastify Application:**
+
+      * Install the Clerk SDK for Node.js: `pnpm add @clerk/clerk-sdk-node`
+      * Implement **Clerk middleware** in your Fastify application. This middleware will verify incoming session tokens (e.g., from `Authorization` headers) and attach user information to the request context. This allows your API routes and GraphQL resolvers to access the authenticated user's ID and details.
+
+     
+
+    ```typescript
+    // Example: Basic Clerk integration in a Fastify plugin (conceptual)
+    import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+    import { ClerkExpressWithAuth } from '@clerk/clerk-sdk-node'; // Or appropriate Fastify adapter
+
+    export default async function authPlugin(server: FastifyInstance) {
+      server.addHook('preHandler', async (request: FastifyRequest, reply: FastifyReply) => {
+        // This is a simplified example. Clerk provides specific middleware for frameworks.
+        // You would typically use Clerk's provided Fastify integration if available,
+        // or adapt Express middleware for Fastify.
+        const auth = ClerkExpressWithAuth(); // This returns an Express middleware
+        // You'd need to adapt this for Fastify's request/reply or use a dedicated Fastify Clerk package.
+        // For example, by converting Fastify's req/res to Express-like objects for the middleware.
+
+        // After successful authentication, `request.auth` (or similar) would contain
+        // the authenticated user's ID and session data.
+        // Example: if (request.auth && request.auth.userId) { /* User is authenticated */ }
+      });
+    }
+    ```
+
+For detailed, framework-specific integration guides and examples of protecting API routes and GraphQL resolvers, refer to the [Clerk Documentation for Node.js](https://www.google.com/search?q=https://clerk.com/docs/references/node/overview).
+
+-----
+
+## Update your application logic
+
+This section details how to extend and manage your application's core logic, leveraging **Fastify** for HTTP endpoints, **Apollo Server** for GraphQL, and **TypeORM** for database interactions.
+
+\<CardGroup\>
+
+\<Card title="Define New Fastify Endpoints" icon="file" href="\#define-new-fastify-endpoints"\>
+Extend your API with new RESTful or custom HTTP endpoints.
+\</Card\>
+
+\<Card title="Manage GraphQL Resolvers" icon="square-code" href="\#manage-graphql-resolvers"\>
+Add or modify GraphQL queries, mutations, and subscriptions.
+\</Card\>
+
+\<Card title="Interact with PostgreSQL via TypeORM" icon="puzzle-piece" href="\#interact-with-postgresql-via-typeorm"\>
+Perform database operations using TypeORM entities and repositories.
+\</Card\>
+
+\</CardGroup\>
+
+### Define New Fastify Endpoints
+
+Your API uses **Fastify** to handle incoming HTTP requests. To add a new endpoint, you would define a new route within your Fastify instance's configuration, specifying the HTTP method, path, and a handler function.
+
+```typescript
+// src/routes/health.ts
+import { FastifyInstance } from 'fastify';
+
+export default async function healthRoutes(server: FastifyInstance) {
+  server.get('/health', async (request, reply) => {
+    // A simple health check endpoint
+    return reply.status(200).send({ status: 'ok', timestamp: new Date().toISOString() });
+  });
+
+  server.post('/api/v1/resource', async (request, reply) => {
+    // Example of a POST endpoint to create a resource
+    const { data } = request.body as { data: string }; // Type your request body
+    // Logic to save data to DB or perform other operations
+    return reply.status(201).send({ message: 'Resource created', data });
+  });
+}
+```
+
+Remember to register these new route files with your main Fastify application instance.
+
+### Manage GraphQL Resolvers
+
+The application uses **Apollo Server** to serve a GraphQL API. You will define your GraphQL schema (Type Definitions) and corresponding resolver functions that fetch or manipulate data.
+
+```typescript
+// src/graphql/schema.ts (Type Definitions)
+import { gql } from 'apollo-server-fastify';
+
+export const typeDefs = gql`
+  type User {
+    id: ID!
+    email: String!
+    name: String
+  }
+
+  type Query {
+    me: User
+    users: [User!]!
+  }
+
+  type Mutation {
+    updateUserName(name: String!): User
+  }
+`;
+
+// src/graphql/resolvers.ts (Resolvers)
+import { IResolvers } from '@graphql-tools/utils'; // Or appropriate Apollo Server type
+
+const resolvers: IResolvers = {
+  Query: {
+    me: async (parent, args, context) => {
+      // Access authenticated user from context (populated by Clerk middleware)
+      if (!context.auth || !context.auth.userId) {
+        throw new Error('Unauthorized');
+      }
+      // Fetch user from database using TypeORM
+      // const user = await context.dataSource.getRepository(User).findOne({ where: { clerkId: context.auth.userId } });
+      return { id: context.auth.userId, email: 'user@example.com', name: 'Authenticated User' }; // Placeholder
+    },
+    users: async (parent, args, context) => {
+      // Example: Fetch all users from database
+      // return context.dataSource.getRepository(User).find();
+      return [{ id: '1', email: 'test@example.com', name: 'Test User' }]; // Placeholder
+    },
+  },
+  Mutation: {
+    updateUserName: async (parent, { name }, context) => {
+      // Example: Update user name in database
+      // if (!context.auth || !context.auth.userId) throw new Error('Unauthorized');
+      // const userRepository = context.dataSource.getRepository(User);
+      // await userRepository.update({ clerkId: context.auth.userId }, { name });
+      // return userRepository.findOne({ where: { clerkId: context.auth.userId } });
+      return { id: '1', email: 'test@example.com', name: name }; // Placeholder
+    },
+  },
+};
+
+export default resolvers;
+```
+
+Remember to integrate your schema and resolvers with Apollo Server in your main Fastify application setup.
+
+### Interact with PostgreSQL via TypeORM
+
+**TypeORM** is used as the Object-Relational Mapper (ORM) to interact with your PostgreSQL database. You'll define TypeScript classes as **Entities** that map to your database tables, and use TypeORM's **Repositories** to perform CRUD (Create, Read, Update, Delete) operations.
+
+```typescript
+// src/entity/Article.ts
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+
+@Entity('articles') // Specify table name if different from class name
+export class Article {
+  @PrimaryGeneratedColumn('uuid') // Using UUIDs for primary keys
+  id: string;
+
+  @Column()
+  title: string;
+
+  @Column({ unique: true })
+  slug: string;
+
+  @Column({ type: 'text' })
+  content: string;
+
+  @Column({ default: false })
+  isPublished: boolean;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  // Add more columns as needed, e.g., authorId, tags, etc.
+}
+
+// Example of using a repository in a service (conceptual)
+// import { DataSource } from 'typeorm';
+// import { Article } from '../entity/Article';
+
+// export class ArticleService {
+//   constructor(private dataSource: DataSource) {}
+
+//   async createArticle(data: Partial<Article>): Promise<Article> {
+//     const articleRepository = this.dataSource.getRepository(Article);
+//     const newArticle = articleRepository.create(data);
+//     return articleRepository.save(newArticle);
+//   }
+
+//   async getArticleBySlug(slug: string): Promise<Article | null> {
+//     const articleRepository = this.dataSource.getRepository(Article);
+//     return articleRepository.findOne({ where: { slug } });
+//   }
+// }
+```
+
+Ensure your `DataSource` (TypeORM connection) is properly initialized and injected into your services or resolvers.
+
+-----
+
+## Deployment Strategy: Delivering Your API
+
+Once your API is ready, deploying it involves making it accessible to your frontend and other consumers. This can be done through various cloud providers, often leveraging containerization.
+
+\<Steps\>
+\<Step title="Containerize your Application"\>
+Create a `Dockerfile` for your application. This defines the environment and steps to build a Docker image of your API. Containerization ensures consistent deployment across different environments.
+
+````
+```dockerfile
+# Use a Node.js base image
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy pnpm-lock.yaml and package.json to leverage Docker layer caching
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the application (if TypeScript)
+RUN pnpm run build
+
+# Expose the port your Fastify app runs on
+EXPOSE 5000
+
+# Start the application
+CMD ["pnpm", "run", "start"] # Or "pnpm", "start" if your package.json has a start script
+```
+````
+
+\</Step\>
+\<Step title="Choose a Deployment Platform"\>
+Select a cloud platform for deploying your Dockerized API. Popular choices include:
+\* **Heroku:** Simple for smaller apps.
+\* **Render:** Provides build and deployment for Docker images, including database services.
+\* **DigitalOcean App Platform / Droplets:** Flexible and scalable VM/container hosting.
+\* **AWS ECS / Google Cloud Run / Azure Container Apps:** Robust container orchestration services for larger, more complex deployments.
+\* **Vercel (for serverless functions):** While your main API might be a long-running service, some smaller functions or microservices could potentially be deployed as serverless functions if structured appropriately.
+\</Step\>
+\<Step title="Set Up CI/CD and Environment Variables"\>
+Configure a **Continuous Integration/Continuous Deployment (CI/CD)** pipeline (e.g., GitHub Actions, GitLab CI/CD, CircleCI) that:
+1\.  Builds your Docker image on every push to your main branch.
+2\.  Pushes the image to a container registry (e.g., Docker Hub, GitHub Container Registry).
+3\.  Deploys the new image to your chosen cloud platform.
+
+```
+Crucially, ensure all necessary production **environment variables** (e.g., `DATABASE_URL`, `CLERK_SECRET_KEY`) are securely configured within your chosen deployment platform's settings, not hardcoded.
+```
+
+\</Steps\>
+\<Step title="Monitor and Scale"\>
+Once deployed, set up monitoring for your API's performance, errors, and resource usage. Most cloud platforms provide built-in monitoring tools. As your application grows, consider implementing autoscaling based on traffic or resource consumption to ensure high availability and responsiveness.
+\</Step\>
+\</Steps\>
