@@ -54,9 +54,9 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://sarthak.app/docs",
-          "icon": "book-open-cover"
+          "anchor": "Github",
+          "href": "https://github.com/cosmicsarthak/hono-openapi-cloudflare",
+          "icon": "github"
         },
         {
           "anchor": "Figma",
