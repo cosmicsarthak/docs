@@ -1,0 +1,314 @@
+---
+title: "AI Experts Freelancer Feature Blueprint"
+description: "A comprehensive feature breakdown for the Freelancer experience, structured for easy integration into documentation."
+---
+
+## The Blueprint
+
+Below is the complete, consolidated “Freelancer” flow—seven epics, each with enriched user stories and their key screens/features—ready to drop into your backlog or architecture docs.
+
+---
+
+### 1. Epic: Onboarding & Profile Setup
+
+**Goal:** Get freelancers “job-ready” in ≤10 minutes, with high profile completeness.
+
+<ParamField body="1.1 Guided Onboarding Wizard" type="feature">
+  As a new freelancer, I want a guided wizard so I know exactly what to fill out next.
+
+  - **Key Screens / Fields:** Welcome → Role selection (Freelancer/Client/Creator) → Progress bar; Profile Basics (Name, Title, Bio)
+</ParamField>
+
+<ParamField body="1.2 LinkedIn/GitHub Import" type="feature">
+  As a freelancer, I want to import my LinkedIn/GitHub so I don’t type everything manually.
+
+  - **Key Screens / Fields:** OAuth buttons \+ conflict-resolution UI (e.g. “imported bio vs. entered bio”)
+</ParamField>
+
+<ParamField body="1.3 Service/Package Configuration" type="feature">
+  As a freelancer, I want to set my services/packages with clear deliverables & pricing tiers.
+
+  - **Key Screens / Fields:** “Create Service” modal: Title, Description, Price, Delivery time, Revisions, Add-ons; “Service Packages” grid
+</ParamField>
+
+<ParamField body="1.4 Portfolio Showcase" type="feature">
+  As a freelancer, I want to showcase past work with rich media so I look credible to clients.
+
+  - **Key Screens / Fields:** “Add Portfolio Item” flow: Title, Role, Tools Used, Images/Videos, Links, Client Testimonial
+</ParamField>
+
+<ParamField body="1.5 Payment Connection" type="feature">
+  As a freelancer, I want to connect payment so I can get paid seamlessly once hired.
+
+  - **Key Screens / Fields:** Stripe Connect flow (Express/Standard) → Status indicator (Connected / Pending Verification)
+</ParamField>
+
+<ParamField body="1.6 Identity Verification" type="feature">
+  As a freelancer, I want to verify my identity to boost trust and unlock premium features.
+
+  - **Key Screens / Fields:** ID upload (passport/driver’s license) → Verification status indicator; Verified badge on public profile
+</ParamField>
+
+<ParamField body="1.7 Optional Skill Assessments" type="feature">
+  As a freelancer, I want to take optional skill assessments so I can demonstrate expertise levels.
+
+  - **Key Screens / Fields:** “Take Test” prompts on key skills (e.g., React, Figma); Score badges displayed on profile
+</ParamField>
+
+<ParamField body="1.8 Working Hours & Timezone" type="feature">
+  As a freelancer, I want to set my working hours and timezone so clients know my availability.
+
+  - **Key Screens / Fields:** Timezone selector \+ weekly availability grid
+</ParamField>
+
+---
+
+### 2. Epic: Discovery & Engagement
+
+**Goal:** Surface matching opportunities and let freelancers easily apply or get invited.
+
+<ParamField body="2.1 Personalized Job Feed" type="feature">
+  As a freelancer, I want a personalized job feed ordered by my skills & activity so I see relevant gigs.
+
+  - **Key Screens / Features:** “Job Feed” with skill-based ranking, saved searches, filters (budget, timeline, remote/onsite)
+</ParamField>
+
+<ParamField body="2.2 Save and Revisit Projects" type="feature">
+  As a freelancer, I want to save and revisit interesting projects so I can apply when ready.
+
+  - **Key Screens / Features:** “Save Job” bookmark icon → “Saved Jobs” tab
+</ParamField>
+
+<ParamField body="2.3 Manage Client Invites" type="feature">
+  As a freelancer, I want to receive and manage client invites so I don’t miss inbound opportunities.
+
+  - **Key Screens / Features:** “Invites” inbox with accept/decline actions \+ invite details (project summary, budget)
+</ParamField>
+
+<ParamField body="2.4 Craft Rich Proposals" type="feature">
+  As a freelancer, I want to craft rich proposals with attachments so I stand out.
+
+  - **Key Screens / Features:** “New Proposal” overlay: Cover letter, select service package, attach files, set custom price
+</ParamField>
+
+<ParamField body="2.5 Proposal Status Tracking" type="feature">
+  As a freelancer, I want to see proposal status (sent, viewed, accepted, rejected) in one place.
+
+  - **Key Screens / Features:** “Proposals” dashboard: status badges, timestamps, client messages linked to each proposal
+</ParamField>
+
+<ParamField body="2.6 AI-Powered Gig Suggestions" type="feature">
+  As a freelancer, I want AI-powered gig suggestions based on my profile and past wins.
+
+  - **Key Screens / Features:** “Recommended for You” carousel on Job Feed; “Why this gig?” tooltip highlighting matching skills
+</ParamField>
+
+<ParamField body="2.7 Job Alerts Setup" type="feature">
+  As a freelancer, I want to set up job alerts so I’m notified when relevant projects are posted.
+
+  - **Key Screens / Features:** “Alert Settings” modal (keywords, budget range, category); Saved alerts list
+</ParamField>
+
+<ParamField body="2.8 A/B Test Proposals" type="feature">
+  As a freelancer, I want to run A/B tests on my proposals (e.g., different cover letters) to improve success.
+
+  - **Key Screens / Features:** “Proposal Variants” option when drafting; performance stats in Proposals dashboard
+</ParamField>
+
+---
+
+### 3. Epic: Collaboration & Workflow
+
+**Goal:** Make communication, contracting, and project execution frictionless and transparent.
+
+<ParamField body="3.1 In-App Chat Tied to Contract" type="feature">
+  As a freelancer, I want an in-app chat tied to a contract so all project discussions stay organized.
+
+  - **Key Screens / Features:** Chat window within each “Contract” page; real-time updates (WebSocket) \+ file sharing
+</ParamField>
+
+<ParamField body="3.2 Scope & Milestones Agreement" type="feature">
+  As a freelancer, I want to agree on scope & milestones so I and my client have clear expectations.
+
+  - **Key Screens / Features:** “Contract Setup” UI: Milestone list (title, deadline, amount), checklist, approval flow
+</ParamField>
+
+<ParamField body="3.3 Automatic Milestone Reminders" type="feature">
+  As a freelancer, I want automatic milestone reminders so I hit my deadlines.
+
+  - **Key Screens / Features:** Calendar integration \+ in-app/email notifications when milestone due date approaches
+</ParamField>
+
+<ParamField body="3.4 Time Logging for Projects" type="feature">
+  As a freelancer, I want to log time against a project so billing matches my hours.
+
+  - **Key Screens / Features:** Timer widget (start/stop) or manual time entry form, with CSV export
+</ParamField>
+
+<ParamField body="3.5 Deliverable Upload & Sign-off" type="feature">
+  As a freelancer, I want to upload deliverables and get client sign-off so payment release is smooth.
+
+  - **Key Screens / Features:** “Submit Milestone” button → Upload area; client sees “Approve / Request Changes”
+</ParamField>
+
+<ParamField body="3.6 Versioned File Sharing" type="feature">
+  As a freelancer, I want versioned file sharing so I can track changes and revert if needed.
+
+  - **Key Screens / Features:** File version history panel in Chat; “Revert to version” action
+</ParamField>
+
+<ParamField body="3.7 Contract Activity Log" type="feature">
+  As a freelancer, I want an activity log for each contract so I see all major events (messages, payments, changes).
+
+  - **Key Screens / Features:** “Activity Feed” on Contract page with timestamps and filters (Payments, Messages, Deliverables)
+</ParamField>
+
+<ParamField body="3.8 Export Project Data" type="feature">
+  As a freelancer, I want to export project data (chat, milestones, invoices) so I can keep offline records.
+
+  - **Key Screens / Features:** “Export Project” button generating a ZIP with PDFs, CSVs, and chat transcripts
+</ParamField>
+
+---
+
+### 4. Epic: Payments & Financials
+
+**Goal:** Provide clear, trustworthy money flow so freelancers know exactly what they’ve earned and when they get paid.
+
+<ParamField body="4.1 Earnings & Payouts Dashboard" type="feature">
+  As a freelancer, I want to view all my earnings & pending payouts in one dashboard.
+
+  - **Key Screens / Features:** “Earnings” tab: total earned, pending balance, available balance with date breakdown
+</ParamField>
+
+<ParamField body="4.2 Fund Withdrawal Options" type="feature">
+  As a freelancer, I want to withdraw funds instantly or on schedule via my preferred method (bank/PayPal).
+
+  - **Key Screens / Features:** “Payout Settings”: add/edit bank account or PayPal; select payout schedule (instant vs. weekly/monthly)
+</ParamField>
+
+<ParamField body="4.3 Auto-Generated PDF Invoices" type="feature">
+  As a freelancer, I want PDF invoices auto-generated for each milestone or contract completion.
+
+  - **Key Screens / Features:** “Invoices” list with download link; template includes platform fee, taxes, freelancer details
+</ParamField>
+
+<ParamField body="4.4 Fee Structure & Tax Details" type="feature">
+  As a freelancer, I want to see my fee structure & tax details so I know net payouts.
+
+  - **Key Screens / Features:** “Fee Breakdown” tooltip on Earned amounts; Tax details under Settings (GST/VAT number entry)
+</ParamField>
+
+<ParamField body="4.5 Escrow System for Payments" type="feature">
+  As a freelancer, I want an escrow system so payments are secured until milestones are approved.
+
+  - **Key Screens / Features:** “Escrow Status” badge on Milestones; Funds locked/unlocked indicators
+</ParamField>
+
+<ParamField body="4.6 Bulk Payout Scheduling" type="feature">
+  As a freelancer, I want bulk payout scheduling so I can batch withdrawals on preferred dates.
+
+  - **Key Screens / Features:** “Bulk Withdraw” flow with calendar picker \+ summary table
+</ParamField>
+
+<ParamField body="4.7 Customizable Tax Documents" type="feature">
+  As a freelancer, I want customizable tax documents (e.g., 1099, GST) so I meet local compliance easily.
+
+  - **Key Screens / Features:** “Tax Docs” tab with form generator → Downloadable PDFs
+</ParamField>
+
+---
+
+### 5. Epic: Growth & Reputation
+
+**Goal:** Enable freelancers to build authority, get more invites, and command higher rates.
+
+<ParamField body="5.1 Client Reviews & Star Ratings" type="feature">
+  As a freelancer, I want client reviews and star ratings so I can build trust with future clients.
+
+  - **Key Screens / Features:** “Reviews” widget on public profile; after each contract, prompt client to leave feedback
+</ParamField>
+
+<ParamField body="5.2 Profile View & Conversion Analytics" type="feature">
+  As a freelancer, I want analytics on profile views & conversion so I can optimize my profile.
+
+  - **Key Screens / Features:** “Insights” tab: daily/week/month views, proposal conversion rate, top-performing services
+</ParamField>
+
+<ParamField body="5.3 Earn Badges for Standing Out" type="feature">
+  As a freelancer, I want to earn badges (e.g., Top Performer, Fast Responder) so I stand out.
+
+  - **Key Screens / Features:** Badge display on public profile \+ filter for clients to search by badge
+</ParamField>
+
+<ParamField body="5.4 Referral Rewards Program" type="feature">
+  As a freelancer, I want referral rewards so I can grow my network and earnings.
+
+  - **Key Screens / Features:** “Refer a Friend” link with unique code, track referred signups & rewards in “Referrals” dashboard
+</ParamField>
+
+<ParamField body="5.5 Referral Leaderboard" type="feature">
+  As a freelancer, I want a referral leaderboard so I can compete and earn extra rewards.
+
+  - **Key Screens / Features:** “Top Referrers” widget in Referrals dashboard
+</ParamField>
+
+<ParamField body="5.6 Publish Thought-Leadership Posts" type="feature">
+  As a freelancer, I want to publish short thought-leadership posts on the platform to showcase expertise.
+
+  - **Key Screens / Features:** “Write a Post” editor with tagging and publish flow; posts surface on community feed
+</ParamField>
+
+<ParamField body="5.7 Periodic Coaching Tips" type="feature">
+  As a freelancer, I want periodic coaching tips (e.g., “optimize your profile”) based on my stats.
+
+  - **Key Screens / Features:** “Freelancer Tips” card on Dashboard with dynamic content
+</ParamField>
+
+---
+
+### 6. Epic: Notifications & Alerts
+
+**Goal:** Keep freelancers informed of all important events in real-time.
+
+<ParamField body="6.1 In-App Notifications" type="feature">
+  As a freelancer, I want in-app notifications for messages, invites, proposal updates, and payments.
+
+  - **Key Screens / Features:** Bell icon with badge count; dropdown list of latest notifications
+</ParamField>
+
+<ParamField body="6.2 Email Digests" type="feature">
+  As a freelancer, I want email digests daily/weekly summarizing new opportunities and activity.
+
+  - **Key Screens / Features:** “Email Settings” page to configure digest frequency and content
+</ParamField>
+
+<ParamField body="6.3 Notification Customization" type="feature">
+  As a freelancer, I want to mute or prioritize certain notifications so I control my focus.
+
+  - **Key Screens / Features:** Notification preferences UI with toggles per event type (Chats, Jobs, Payments, Tips, etc.)
+</ParamField>
+
+---
+
+### 7. Epic: Support & Resources
+
+**Goal:** Provide help & educational materials to ensure success on the platform.
+
+<ParamField body="7.1 Searchable Help Center" type="feature">
+  As a freelancer, I want instant access to a searchable Help Center so I can self-serve answers.
+
+  - **Key Screens / Features:** “Help” link in nav → searchable FAQs, categorized articles
+</ParamField>
+
+<ParamField body="7.2 Live Chat or Ticket Support" type="feature">
+  As a freelancer, I want live chat or ticket support when I hit an issue I can’t resolve myself.
+
+  - **Key Screens / Features:** “Contact Support” widget opening real-time chat (or ticket creation form with attachments)
+</ParamField>
+
+<ParamField body="7.3 Webinars and Events Calendar" type="feature">
+  As a freelancer, I want webinars and events calendar so I can upskill and network.
+
+  - **Key Screens / Features:** “Events” page listing upcoming workshops/webinars with RSVP and calendar sync
+</ParamField>
