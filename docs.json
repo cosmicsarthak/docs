@@ -1,5 +1,5 @@
 {
-  "$schema": "https://sarthak.app/docs.json",
+  "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Mint Starter Kit",
   "colors": {
@@ -46,7 +46,7 @@
           {
             "group": "Endpoint Examples",
             "pages": [
-              "api-reference/endpoint/get",
+              "https://api-ai-marketplace.cosmicsarthak.workers.dev/reference#tag/freelancerprofiles/get",
               "api-reference/endpoint/create",
               "api-reference/endpoint/delete",
               "api-reference/endpoint/webhook"
@@ -58,13 +58,18 @@
     "global": {
       "anchors": [
         {
-          "anchor": "API Webapp",
-          "href": "https://api-ai-marketplace.cosmicsarthak.workers.dev/reference",
+          "anchor": "Documentation",
+          "href": "https://mintlify.com/docs",
           "icon": "book-open-cover"
         },
         {
+          "anchor": "Community",
+          "href": "https://mintlify.com/community",
+          "icon": "slack"
+        },
+        {
           "anchor": "Blog",
-          "href": "https://sarthak.app/blog",
+          "href": "https://mintlify.com/blog",
           "icon": "newspaper"
         }
       ]
@@ -78,13 +83,13 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@sarthak.app"
+        "href": "mailto:hi@mintlify.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.sarthak.app"
+      "href": "https://dashboard.mintlify.com"
     }
   },
   "footer": {
