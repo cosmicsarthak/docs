@@ -11,14 +11,14 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Notes",
         "groups": [
           {
             "group": "Get Started",
             "pages": [
               "index",
               "quickstart",
-              "development"
+              "backend-architecture"
             ]
           },
           {
