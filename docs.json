@@ -24,9 +24,10 @@
           {
             "group": "Essentials",
             "pages": [
-              "essentials/markdown",
-              "essentials/navigation",
-              "essentials/blueprint"
+              "essentials/blueprint",
+              "essentials/components",
+              "essentials/navigation"
+              
             ]
           }
         ]
