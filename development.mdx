@@ -4,7 +4,9 @@ og:title: "Building a Type-Safe API with Hono and OpenAPI"
 description: "An end-to-end guide on setting up a fully documented and type-safe API using Hono and OpenAPI, leveraging tools like Stoker, hono-pino, Neon, Upstash, Growthbook, and Clerk for authentication, with detailed deployment notes for Cloudflare and Vercel."
 ---
 
-You can build a robust, type-safe, and well-documented API using this guide. This guide will walk you through the entire process of setting up your Hono API, incorporating best practices and useful libraries, along with modern cloud services for databases, caching, feature flagging, and authentication.
+You can build a robust, type-safe, and well-documented API using this guide. This guide will walk you through the entire process of setting up your Hono API, incorporating best practices and useful libraries, along with modern cloud services for databases, caching, feature flagging, and authentication. 
+
+I am also proving the client (Aniket Nagla) a custom working backend repo for this project, please refer to that as well for getting better idea. That app is [hosted here](https://api-ai-marketplace.cosmicsarthak.workers.dev/)
 
 ## Prerequisites
 
@@ -31,7 +33,7 @@ First, you'll need to initialize your Hono project and set up the development en
 
 <Steps>
   <Step title="Initialize Hono project">
-    Start by creating a new Hono project using its CLI tool. This typically involves setting up a `source` directory with an `index.ts` file for your main Hono application. You can specify a project name like "tasks API" and choose Node.js for deployment, but note Hono's runtime-agnostic nature.
+    Start by creating a new Hono project using its CLI tool. This typically involves setting up a `source` directory with an `index.ts` (sometimes like in my case its case, its `app.ts`)file for your main Hono application. You can specify a project name like "tasks API" and choose Node.js for deployment, but note Hono's runtime-agnostic nature and I prefer Cloudflare Workers as Client has limited initial set budget.
 
     ```bash Terminal
     # You can use your preferred package manager, e.g., pnpm
