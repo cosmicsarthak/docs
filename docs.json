@@ -25,11 +25,7 @@
             "group": "Essentials",
             "pages": [
               "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "essentials/navigation"
             ]
           }
         ]
@@ -59,17 +55,17 @@
       "anchors": [
         {
           "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
+          "href": "https://sarthak.app/docs",
           "icon": "book-open-cover"
         },
         {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
+          "anchor": "Figma",
+          "href": "https://sarthak.app/figma",
+          "icon": "figma"
         },
         {
           "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
+          "href": "https://sarthak.app/blog",
           "icon": "newspaper"
         }
       ]
