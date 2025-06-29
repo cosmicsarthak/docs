@@ -357,7 +357,7 @@ Users need a centralized, intuitive interface to view and manage all their artic
 - **UI Layout:** Design a table or grid view to display articles, featuring columns for **Title**, **Status** (Draft/Published), **Author**, **Last Updated**, and **Actions** (Edit, View, Delete). Implement client-side filtering, sorting, and pagination for optimal user experience with large datasets.
 - **Data Fetching Strategy:** The frontend sends an authenticated `GET` request to your **Hono API** endpoint: `/articles`. The Hono API, leveraging `packages/db`, will query the `Article` model, typically filtering by the authenticated user's ID (obtained from the Clerk token verified by Hono).
 
-```tsx apps/web/app/dashboard/articles/page.tsx (App Router Example)
+```tsx apps/web/app/dashboard/articles/page.tsx
 import { getAuth } from '@clerk/nextjs/server'; // For server-side fetching
 import { redirect } from 'next/navigation';
 import { ArticleTable } from './_components/ArticleTable'; // Your table component
