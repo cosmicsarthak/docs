@@ -1,10 +1,10 @@
 ---
-title: "The Hono API Setup Guide"
+title: "The Backend with OpenAPI"
 og:title: "Building a Type-Safe API with Hono and OpenAPI"
 description: "An end-to-end guide on setting up a fully documented and type-safe API using Hono and OpenAPI, leveraging tools like Stoker, hono-pino, Neon, Upstash, Growthbook, and Clerk for authentication, with detailed deployment notes for Cloudflare and Vercel."
 ---
 
-You can build a robust, type-safe, and well-documented API using Hono. This guide will walk you through the entire process of setting up your Hono API, incorporating best practices and useful libraries, along with modern cloud services for databases, caching, feature flagging, and authentication.
+You can build a robust, type-safe, and well-documented API using this guide. This guide will walk you through the entire process of setting up your Hono API, incorporating best practices and useful libraries, along with modern cloud services for databases, caching, feature flagging, and authentication.
 
 ## Prerequisites
 
@@ -53,6 +53,7 @@ First, you'll need to initialize your Hono project and set up the development en
     # Example: Install ESLint and related plugins
     pnpm add -D eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier eslint-plugin-prettier
     ```
+
     After installation, you may need to reload VS Code for the ESLint settings to take effect.
   </Step>
   <Step title="Set up environment variables">
@@ -80,11 +81,11 @@ Organize your Hono application for clarity and maintainability, especially when 
     // Example using Stoker's notFound utility (install 'stoker' if using)
     import { Hono } from 'hono';
     import { notFound } from 'stoker'; // Assuming 'stoker' is installed
-
+    
     const app = new Hono();
-
+    
     app.notFound(notFound());
-
+    
     export default app;
     ```
   </Step>
@@ -95,9 +96,9 @@ Organize your Hono application for clarity and maintainability, especially when 
     // Example: Global error handler
     import { Hono } from 'hono';
     import { HTTPException } from 'hono/http-exception';
-
+    
     const app = new Hono();
-
+    
     app.onError((err, c) => {
       if (err instanceof HTTPException) {
         return err.getResponse();
@@ -108,7 +109,7 @@ Organize your Hono application for clarity and maintainability, especially when 
         ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
       }, 500);
     });
-
+    
     export default app;
     ```
   </Step>
@@ -120,16 +121,16 @@ Organize your Hono application for clarity and maintainability, especially when 
     import { Hono } from 'hono';
     import { logger } from 'hono-pino';
     import { PinoLogger } from 'pino'; // Import PinoLogger type
-
+    
     // Define app bindings for type safety
     interface AppBindings {
       Variables: {
         logger: PinoLogger;
       };
     }
-
+    
     const app = new Hono<AppBindings>();
-
+    
     // Custom logger instance with request ID for traceability
     app.use(logger({
       genReqId: (req) => {
@@ -146,14 +147,14 @@ Organize your Hono application for clarity and maintainability, especially when 
         },
       }),
     }));
-
+    
     // Your routes would go here, e.g.:
     app.get('/', (c) => {
       // Access the logger from the context
       c.get('logger').info('Hello from Hono!');
       return c.json({ message: 'Hello Hono API!' });
     });
-
+    
     export default app;
     ```
   </Step>
@@ -179,7 +180,7 @@ Organize your Hono application for clarity and maintainability, especially when 
     //   name: text('name').notNull(),
     //   createdAt: timestamp('created_at').defaultNow(),
     // });
-
+    
     // Generate Zod schema from Drizzle:
     // import { createSelectSchema } from 'drizzle-zod';
     // export const selectUserSchema = createSelectSchema(users);
@@ -196,7 +197,7 @@ You have the option to use either a MySQL database via PlanetScale or a PostgreS
   **PlanetScale (MySQL):** PlanetScale recently [removed their free
   tier](https://planetscale.com/blog/planetscale-forever), so you'll need to pay
   for this option. A cheaper alternative is to use a [MySQL database on
-  Railway](https://railway.app/template/mysql) ($5/month).
+  Railway](https://railway.app/template/mysql) (\$5/month).
 
   **Local Development:** For local development, it is recommended to use a [local MySQL database
   with PlanetScale simulator](local-development#option-1-local-mysql-database-with-planetScale-simulator-recommended) (100% free) or a local PostgreSQL instance (e.g., using Docker or a local `pg` installation). For Cloudflare Workers, [Turso](https://turso.tech/) is suggested for local database simulation.
@@ -222,21 +223,24 @@ You have the option to use either a MySQL database via PlanetScale or a PostgreS
     ```bash Terminal
     DATABASE_URL="your_database_connection_string"
     ```
+
     <Frame>
       {/* Placeholder for database credentials image */}
     </Frame>
   </Step>
   <Step title="Generate ORM client and create database tables">
     First, install your chosen ORM (Prisma or Drizzle) in your project:
+
     ```bash Terminal
     # For Prisma
     pnpm add prisma @prisma/client
     pnpm prisma init
-
+    
     # For Drizzle (example for PostgreSQL)
     pnpm add drizzle-orm pg
     pnpm add -D drizzle-kit
     ```
+
     Update your ORM schema file (e.g., `prisma/schema.prisma` or your Drizzle schema file) to define your data models.
 
     Then, run the following command to generate the ORM client based on your schema:
@@ -244,7 +248,7 @@ You have the option to use either a MySQL database via PlanetScale or a PostgreS
     ```bash Terminal
     # For Prisma
     pnpm prisma generate
-
+    
     # For Drizzle
     pnpm drizzle-kit generate:pg # or generate:mysql
     ```
@@ -254,7 +258,7 @@ You have the option to use either a MySQL database via PlanetScale or a PostgreS
     ```bash Terminal
     # For Prisma
     pnpm prisma db push
-
+    
     # For Drizzle (run migrations)
     # You'll need to write a script to run Drizzle migrations, e.g.:
     # node src/db/migrate.ts
@@ -283,6 +287,7 @@ Next, you'll need to set up the [Upstash](https://upstash.com) Redis database. T
     UPSTASH_REDIS_REST_URL="your_upstash_redis_rest_url"
     UPSTASH_REDIS_REST_TOKEN="your_upstash_redis_rest_token"
     ```
+
     <Frame>
       {/* Placeholder for Upstash REST API credentials image */}
     </Frame>
@@ -315,18 +320,20 @@ Clerk provides a complete user management solution, including authentication, us
   </Step>
   <Step title="Integrate Clerk with Hono">
     Install Clerk's SDK for your backend:
+
     ```bash Terminal
     pnpm add @clerk/clerk-sdk-node
     ```
+
     Use Clerk's middleware or utilities in your Hono routes to protect API endpoints and retrieve authenticated user information. Clerk automatically handles JWT verification and user session management on the backend, ensuring that only authenticated requests can access protected resources.
 
     ```typescript
     // Example: Protecting a Hono route with Clerk
     import { Hono } from 'hono';
     import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node'; // Or a custom Hono-compatible middleware
-
+    
     const app = new Hono();
-
+    
     // This is a conceptual example. You might need to adapt Clerk's Node.js SDK
     // to work seamlessly with Hono's middleware system.
     // A common pattern is to create a Hono middleware that wraps Clerk's verification logic.
@@ -341,7 +348,7 @@ Clerk provides a complete user management solution, including authentication, us
         // const session = await client.verifyToken(sessionToken);
         // if (!session) throw new Error('Unauthorized');
         // c.set('userId', session.userId); // Attach user ID to Hono context
-
+    
         // For simplicity, let's assume a basic check for now
         const userId = c.req.header('X-Clerk-User-Id'); // Example for a pre-verified token from a frontend
         if (!userId) {
@@ -354,12 +361,12 @@ Clerk provides a complete user management solution, including authentication, us
         return c.json({ error: 'Unauthorized: Invalid token' }, 401);
       }
     };
-
+    
     app.get('/protected', clerkAuthMiddleware, (c) => {
       const userId = c.get('userId');
       return c.json({ message: `Hello, authenticated user ${userId}!` });
     });
-
+    
     export default app;
     ```
   </Step>
@@ -377,27 +384,30 @@ Growthbook allows you to implement feature flags and A/B tests in your applicati
     In your Growthbook project, navigate to "SDK Connections" or "API Keys" to obtain your **Growthbook API Key** (Client Key for client-side SDK, Secret Key for server-side SDK). For a Hono backend, you'll likely use the server-side SDK, which requires the Secret Key.
 
     Add this key to your `.env` file:
+
     ```bash Terminal
     GROWTHBOOK_API_KEY="your_growthbook_api_key"
     ```
   </Step>
   <Step title="Integrate Growthbook with Hono">
     Install the Growthbook SDK for Node.js:
+
     ```bash Terminal
     pnpm add @growthbook/growthbook
     ```
+
     Initialize Growthbook in your Hono application and use it to check feature flags in your API logic. It's good practice to load features once at application start and then use the instance in your requests.
 
     ```typescript
     // Example: Using Growthbook in Hono
     import { Hono } from 'hono';
     import { GrowthBook } from '@growthbook/growthbook';
-
+    
     const app = new Hono();
-
+    
     // Initialize Growthbook at application start
     let gb: GrowthBook;
-
+    
     app.use(async (c, next) => {
       if (!gb) {
         gb = new GrowthBook({
@@ -411,7 +421,7 @@ Growthbook allows you to implement feature flags and A/B tests in your applicati
       c.set('growthbook', gb);
       await next();
     });
-
+    
     app.get('/feature-test', (c) => {
       const gbInstance = c.get('growthbook');
       if (gbInstance.isOn('new-api-endpoint')) {
@@ -420,7 +430,7 @@ Growthbook allows you to implement feature flags and A/B tests in your applicati
         return c.json({ message: 'Old API endpoint is active (feature flag disabled).' });
       }
     });
-
+    
     export default app;
     ```
   </Step>
@@ -453,9 +463,9 @@ Once you've set up your Hono application and all integrated services, you can no
     Click on **Deploy** to deploy your project.
   </Step>
   <Step title="Add required environment variables and domains">
-    Once the project deploys, retrieve your [Vercel project ID](https://vercel.com/docs/projects/overview#project-id) and add it as the `PROJECT_ID_VERCEL` environment variable – both in your `.env` file and in your newly created Vercel project's settings (under **Settings > Environment Variables**).
+    Once the project deploys, retrieve your [Vercel project ID](https://vercel.com/docs/projects/overview#project-id) and add it as the `PROJECT_ID_VERCEL` environment variable – both in your `.env` file and in your newly created Vercel project's settings (under **Settings \> Environment Variables**).
 
-    Add your API domain (e.g., `api.example.com`) as a domain in your Vercel project's settings (under **Settings** > **Domains**). You can follow this guide to learn [how to set up a custom domain on Vercel](https://vercel.com/docs/projects/domains/add-a-domain).
+    Add your API domain (e.g., `api.example.com`) as a domain in your Vercel project's settings (under **Settings** \> **Domains**). You can follow this guide to learn [how to set up a custom domain on Vercel](https://vercel.com/docs/projects/domains/add-a-domain).
   </Step>
   <Step title="Redeploy your Vercel project">
     Go back to the **Deployments** page and redeploy your project.
@@ -486,11 +496,12 @@ Hono was initially built with Cloudflare Workers in mind, making it an excellent
     main = "src/app.ts" # Your Hono app entry point
     compatibility_date = "2025-06-29" # Use the current or a recent date
     workers_dev = true
-
+    
     # Example for environment variables (secrets are added via CLI/dashboard)
     # [vars]
     # MY_VARIABLE = "value"
     ```
+
     **Note:** The `compatibility_date` should be set to the current date or a recent date to ensure you're using the latest Workers features.
   </Step>
   <Step title="Update Package.json Scripts">
@@ -510,43 +521,43 @@ Hono was initially built with Cloudflare Workers in mind, making it an excellent
   <Step title="Handle Environment Variables for Cloudflare Workers">
     A key challenge with Cloudflare Workers is that environment variables and secrets are only accessible within the `fetch` event handler, not through `process.env`. You'll need to refactor your environment variable handling.
 
-    1.  **Define an `Environment` type:** Rename your `Env` type to `Environment` (or similar) to align with Hono's built-in types for `c.env`.
-    2.  **Create a `parseEnv` function:** Export a `parseEnv` function that accepts an object (your `c.env` from the request context), validates it with Zod (or similar), and returns the validated environment variables. This function should throw an error if validation fails.
-    3.  **Add a middleware for validation:** Implement a Hono middleware that runs first, validates `c.env` using your `parseEnv` function, and ensures environment variables are correctly typed and accessible within request handlers.
-    4.  **Update type bindings:** Ensure `c.env` is correctly typed as `Environment` in your `app.d.ts` or similar type definition file.
-    5.  **`runtime-env.ts` for local tools:** Create a `runtime-env.ts` file to provide a way to access `process.env` for local tools (like Drizzle Kit) that run outside the Cloudflare Worker context. This file can export a default parsed `process.env`.
+    1. **`Define an Environment type:`** Rename your `Env` type to `Environment` (or similar) to align with Hono's built-in types for `c.env`.
+    2. **`Create a parseEnv function:`** Export a `parseEnv` function that accepts an object (your `c.env` from the request context), validates it with Zod (or similar), and returns the validated environment variables. This function should throw an error if validation fails.
+    3. **Add a middleware for validation:** Implement a Hono middleware that runs first, validates `c.env` using your `parseEnv` function, and ensures environment variables are correctly typed and accessible within request handlers.
+    4. **Update type bindings:** Ensure `c.env` is correctly typed as `Environment` in your `app.d.ts` or similar type definition file.
+    5. **`runtime-env.ts for local tools:`** Create a `runtime-env.ts` file to provide a way to access `process.env` for local tools (like Drizzle Kit) that run outside the Cloudflare Worker context. This file can export a default parsed `process.env`.
 
     ```typescript
     // src/types.d.ts (or similar)
     import { Env } from 'hono'; // Hono's base Env type
     import { z } from 'zod'; // Assuming Zod for validation
-
+    
     // Define your expected environment variables schema
     export const EnvSchema = z.object({
       DATABASE_URL: z.string().url(),
       CLERK_SECRET_KEY: z.string(),
       // ... other env variables
     });
-
+    
     // Extend Hono's Env to include your validated environment variables
     declare module 'hono' {
       interface Env extends z.infer<typeof EnvSchema> {}
     }
-
+    
     // src/utils/env.ts (or similar)
     import { EnvSchema } from '../types';
-
+    
     export const parseEnv = (env: unknown) => {
       return EnvSchema.parse(env);
     };
-
+    
     // src/app.ts (Hono app)
     import { Hono } from 'hono';
     import { parseEnv } from './utils/env';
     import { EnvSchema } from './types'; // Import EnvSchema for type inference
-
+    
     const app = new Hono<{ Bindings: z.infer<typeof EnvSchema> }>();
-
+    
     // Middleware to parse and validate environment variables from c.env
     app.use(async (c, next) => {
       try {
@@ -561,21 +572,21 @@ Hono was initially built with Cloudflare Workers in mind, making it an excellent
         return c.json({ error: 'Server configuration error' }, 500);
       }
     });
-
+    
     export default app;
     ```
   </Step>
   <Step title="Refactor Database Connection for Workers">
     Since database clients and connections need to be created on every incoming request in a serverless environment like Cloudflare Workers, refactor your database setup.
 
-    1.  Export a `createDB` function from your database module (e.g., `src/db/index.ts`) that takes the `Environment` object (or your parsed environment variables) and returns the database client and instances.
-    2.  Call this `createDB` function within each request handler where database access is needed, ensuring the connection uses the environment variables available in the request context.
+    1. Export a `createDB` function from your database module (e.g., `src/db/index.ts`) that takes the `Environment` object (or your parsed environment variables) and returns the database client and instances.
+    2. Call this `createDB` function within each request handler where database access is needed, ensuring the connection uses the environment variables available in the request context.
 
     ```typescript
     // src/db/index.ts (conceptual)
     import { drizzle } from 'drizzle-orm/libsql'; // For Turso/SQLite
     import { createClient } from '@libsql/client'; // For Turso
-
+    
     export const createDB = (env: { DATABASE_URL: string; DATABASE_AUTH_TOKEN?: string }) => {
       const client = createClient({
         url: env.DATABASE_URL,
@@ -584,13 +595,13 @@ Hono was initially built with Cloudflare Workers in mind, making it an excellent
       const db = drizzle(client);
       return { client, db };
     };
-
+    
     // src/routes/tasks/handlers.ts (conceptual Hono handler)
     import { Hono } from 'hono';
     import { createDB } from '../../db'; // Adjust path
-
+    
     const app = new Hono();
-
+    
     app.get('/tasks', async (c) => {
       const { db } = createDB(c.env); // Pass c.env to createDB
       // const tasks = await db.select().from(schema.tasks).execute();
@@ -601,12 +612,12 @@ Hono was initially built with Cloudflare Workers in mind, making it an excellent
   <Step title="Local Development with Wrangler and Turso">
     To simulate Cloudflare's environment locally and have a local database, it is suggested to use `Wrangler` with `Turso`.
 
-    1.  **`.dev.vars` file:** Create a `.dev.vars` file (by copying your `.env`) to store local environment variables for Wrangler. Add this file to your `.gitignore`.
-    2.  **Install Turso CLI:** `pnpm add -D turso`
-    3.  **`dev:db` script:** Add a `dev:db` script to `package.json` to run `turso dev` for a local database instance, using a file like `dev.db`.
-    4.  **Push schema to local DB:** Push your Drizzle Kit schema to this local `dev.db`.
-    5.  **Update `DATABASE_URL`:** Update the `DATABASE_URL` in `.dev.vars` to point to the local Turso HTTP API (e.g., `http://127.0.0.1:8080`).
-    6.  **Gitignore local DB files:** Add `dev.db.*` to `.gitignore`.
+    1. **`.dev.vars file:`** Create a `.dev.vars` file (by copying your `.env`) to store local environment variables for Wrangler. Add this file to your `.gitignore`.
+    2. **Install Turso CLI:** `pnpm add -D turso`
+    3. **`dev:db script:`** Add a `dev:db` script to `package.json` to run `turso dev` for a local database instance, using a file like `dev.db`.
+    4. **Push schema to local DB:** Push your Drizzle Kit schema to this local `dev.db`.
+    5. **`Update DATABASE_URL:`** Update the `DATABASE_URL` in `.dev.vars` to point to the local Turso HTTP API (e.g., `http://127.0.0.1:8080`).
+    6. **Gitignore local DB files:** Add `dev.db.*` to `.gitignore`.
 
     ```bash Terminal
     # Example .dev.vars
@@ -614,7 +625,7 @@ Hono was initially built with Cloudflare Workers in mind, making it an excellent
     DATABASE_AUTH_TOKEN="" # Turso local dev doesn't require auth token usually
     CLERK_SECRET_KEY="sk_test_..."
     # ... other local env variables
-
+    
     # package.json scripts
     {
       "scripts": {
@@ -629,13 +640,14 @@ Hono was initially built with Cloudflare Workers in mind, making it an excellent
   <Step title="Deploy to Cloudflare">
     Once configured, deploy your application using the Wrangler CLI.
 
-    1.  **Authenticate:** Ensure you are logged into Cloudflare via `wrangler login`.
-    2.  **Add Secrets:** Manually add your sensitive environment variables (like `CLERK_SECRET_KEY`, `DATABASE_URL`, `DATABASE_AUTH_TOKEN` for remote DBs) as secrets in the Cloudflare dashboard for your Worker.
-    3.  **Deploy:** Run `pnpm run deploy`.
+    1. **Authenticate:** Ensure you are logged into Cloudflare via `wrangler login`.
+    2. **Add Secrets:** Manually add your sensitive environment variables (like `CLERK_SECRET_KEY`, `DATABASE_URL`, `DATABASE_AUTH_TOKEN` for remote DBs) as secrets in the Cloudflare dashboard for your Worker.
+    3. **Deploy:** Run `pnpm run deploy`.
 
     ```bash Terminal
     pnpm run deploy
     ```
+
     **Note:** If you make changes to secrets in the Cloudflare dashboard, deploying from the CLI might override them unless explicitly configured not to. Always verify your deployed application by accessing its URL and testing endpoints.
   </Step>
 </Steps>
@@ -644,11 +656,11 @@ Hono was initially built with Cloudflare Workers in mind, making it an excellent
 
 This guide is meant to be a comprehensive starting point for setting up your Hono API. It currently relies on the following services:
 
--   **Database**: [PlanetScale](https://planetscale.com/) (MySQL) or [Neon](https://neon.tech/) (PostgreSQL) with Prisma or Drizzle as the ORM. For Cloudflare Workers local development, [Turso](https://turso.tech/) is recommended.
--   **Caching/Real-time data**: [Upstash](https://upstash.com/) (Redis)
--   **Authentication**: [Clerk](https://clerk.com/) for user management and backend verification
--   **Feature Flagging**: [Growthbook](https://www.growthbook.io/)
--   **Hosting**: [Vercel](https://vercel.com/) or [Cloudflare Workers](https://workers.cloudflare.com/)
--   **Developer Experience**: "Stoker" for boilerplate reduction, `hono-pino` for robust logging, and integration with Zod and OpenAPI for type safety and documentation.
+- **Database**: [PlanetScale](https://planetscale.com/) (MySQL) or [Neon](https://neon.tech/) (PostgreSQL) with Prisma or Drizzle as the ORM. For Cloudflare Workers local development, [Turso](https://turso.tech/) is recommended.
+- **Caching/Real-time data**: [Upstash](https://upstash.com/) (Redis)
+- **Authentication**: [Clerk](https://clerk.com/) for user management and backend verification
+- **Feature Flagging**: [Growthbook](https://www.growthbook.io/)
+- **Hosting**: [Vercel](https://vercel.com/) or [Cloudflare Workers](https://workers.cloudflare.com/)
+- **Developer Experience**: "Stoker" for boilerplate reduction, `hono-pino` for robust logging, and integration with Zod and OpenAPI for type safety and documentation.
 
 The Hono application's core definition is runtime-agnostic, allowing for flexible deployment to various environments. However, specific platform requirements (like Cloudflare's environment variable handling) necessitate careful configuration.
